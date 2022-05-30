@@ -5,6 +5,8 @@ from environment import stt_api_key, stt_url
 from ibm_watson import SpeechToTextV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
+import json
+
 
 def download_video(video_url, user_id):
     """TODO:
@@ -23,10 +25,6 @@ def extract_audio(video_filepath, user_id):
     audio_clip.audio.write_audiofile(
         "../videos/{uuid}_audio.mp3".format(uuid=user_id))
 
-
-# user_id = 1
-# download_video("https://www.youtube.com/watch?v=ad79nYk2keg", user_id)
-# extract_audio("../videos/1_video.mp4", user_id)
 
 def setup_stt():
     authenticator = IAMAuthenticator(stt_api_key)
@@ -47,14 +45,13 @@ def transcribe_audio(user_id):
 
 
 def process_response():
-    import json
-    # Serialize data into file:
-    json.dump(data, open("file_name.json", 'w'))
-
-    # Read data from file:
     data = json.load(open("transcript.json"))
 
-    print(data)
+    text = [result['alternatives'][0]['transcript'].rstrip() + '.\n' for result
+            in data['results']]
+    text = [para[0].title() + para[1:] for para in text]
+    transcript = ''.join(text)
+    print(transcript)
 
 
 process_response()
