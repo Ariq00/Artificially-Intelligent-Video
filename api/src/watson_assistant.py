@@ -27,5 +27,4 @@ def send_stateless_message(text):
 
     return response
 
-
-send_stateless_message("Tell me about football")
+# send_stateless_message("Tell me about football")
