@@ -30,7 +30,7 @@ def setup_stt():
 
 def process_audio(video_filepath, user_id):
     chunk_number = 0
-    chunk_duration = 10
+    chunk_duration = 5
     full_audio_clip = VideoFileClip(video_filepath).audio
     total_duration = int(full_audio_clip.duration)
     current_duration = 0
@@ -51,7 +51,7 @@ def process_audio(video_filepath, user_id):
         else:
             # create subclip starting from the current duration
             clip = full_audio_clip.subclip(current_duration,
-                                           current_duration + chunk_duration)
+                                           current_duration + chunk_duration + 1)  # 1 second overlap between each chunk
         # save the subclip
         clip.write_audiofile(chunk_file_path)
 
@@ -63,7 +63,7 @@ def process_audio(video_filepath, user_id):
         current_duration += chunk_duration
         chunk_number += 1
 
-        # Delete the chunk file
+        # Delete the chunk file to save storage space
         os.remove(chunk_file_path)
 
     with open(transcript_path, "w") as outfile:
