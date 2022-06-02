@@ -39,6 +39,7 @@ def upload_transcript(discovery):
 
 
 def query_transcript(discovery, document_id, user_query):
+    chunk_duration = 5  # TODO: define these variables globally
     result = discovery.query(
         environment_id=discovery_environment_id,
         collection_id=discovery_collection_id,
@@ -50,7 +51,7 @@ def query_transcript(discovery, document_id, user_query):
         passages_count=3  # number of passages to return
     ).get_result()
     return [{"passage_text": matching_passage["passage_text"],
-             "timestamp": int(matching_passage["field"]) * 5} for
+             "timestamp": int(matching_passage["field"]) * chunk_duration} for
             matching_passage
             in result["passages"]]
 
