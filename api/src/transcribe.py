@@ -51,7 +51,7 @@ def process_audio(video_filepath, user_id):
         else:
             # create subclip starting from the current duration
             clip = full_audio_clip.subclip(current_duration,
-                                           current_duration + chunk_duration + 1)  # 1 second overlap between each chunk
+                                           current_duration + chunk_duration + 0.5)  # 0.5 second overlap between each chunk
         # save the subclip
         clip.write_audiofile(chunk_file_path)
 
@@ -84,7 +84,3 @@ def transcribe_audio(stt, user_id, chunk_number):
             chunk_text += section["alternatives"][0]["transcript"]
 
     return chunk_text
-
-# video_filepath = "../video/1_video.mp4"
-# user_id = "overlap"
-# process_audio(video_filepath, user_id)
