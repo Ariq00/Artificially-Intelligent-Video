@@ -66,7 +66,6 @@ def delete_transcript(discovery, document_id):
 
 discovery = setup_discovery()
 
-# parse_transcript()
 # document_id = "b483a604-3736-4406-b88c-d3add2016b07"
 # query = "alexa"
 # print(query_transcript(discovery, document_id, query))
