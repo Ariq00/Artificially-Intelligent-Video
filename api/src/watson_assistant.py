@@ -83,8 +83,7 @@ def watson_assistant_query(text, document_id):
 
     return ordered_results[0:2]  # return top 2 results
 
-
-document_id = "b483a604-3736-4406-b88c-d3add2016b07"
-print(
-    watson_assistant_query('tell me when Some AI focuses solely on one task',
-                           document_id))
+# document_id = "b483a604-3736-4406-b88c-d3add2016b07"
+# print(
+#     watson_assistant_query('what is the future of AI',
+#                            document_id))
