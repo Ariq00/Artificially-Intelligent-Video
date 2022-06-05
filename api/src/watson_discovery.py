@@ -2,7 +2,6 @@ from ibm_watson import DiscoveryV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from environment import discovery_api_key, discovery_url, \
     discovery_environment_id, discovery_collection_id
-import json
 
 
 def setup_discovery():
@@ -26,8 +25,11 @@ def check_if_transcript_exists(discovery, filename):
     return False
 
 
-def upload_transcript(discovery):
-    transcript_path = "../transcripts/5-second_overlap_transcript.json"
+def upload_transcript(discovery, transcript_filename):
+    transcript_path = "../transcripts/" + transcript_filename
+    if check_if_transcript_exists(discovery, transcript_filename):
+        delete_transcript(discovery, check_if_transcript_exists(discovery,
+                                                                transcript_filename))
     with open(transcript_path) as fileinfo:
         add_doc = discovery.add_document(
             environment_id=discovery_environment_id,
@@ -65,8 +67,7 @@ def delete_transcript(discovery, document_id):
         document_id=document_id
     )
 
-
-discovery = setup_discovery()
+# discovery = setup_discovery()
 
 # document_id = "b483a604-3736-4406-b88c-d3add2016b07"
 # query = "alexa"

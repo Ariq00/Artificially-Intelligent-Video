@@ -44,11 +44,13 @@
 <!--YouTube URL Box-->
 <section class="pt-4">
     <div class="container">
-        <form class="row">
+        <form class="row" id="YouTubeForm" method="POST">
+            <input type="hidden" name="video" value="youtube">
             <div class="col-sm-6">
                 <label for="youtubeUrl" class="visually-hidden">YouTube
                     URL</label>
-                <input type="url" class="form-control" id="youtubeUrl"
+                <input type="url" class="form-control"
+                       id="youtubeUrl" name="youtubeUrl"
                        placeholder="Enter YouTube URL">
             </div>
 
@@ -65,7 +67,7 @@
 <section class="pt-3">
     <div class="container">
         <form>
-
+            <input type="hidden" name="video" value="file">
             <div class="row">
                 <div class="col-sm-6">
                     <label for="formFile" class="form-label">Alternatively
@@ -75,7 +77,8 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <input class="form-control" type="file" id="formFile">
+                    <input class="form-control" type="file" name="formFile"
+                           id="formFile">
                 </div>
 
                 <div class="col-sm-4">

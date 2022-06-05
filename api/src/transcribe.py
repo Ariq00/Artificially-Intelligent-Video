@@ -11,14 +11,14 @@ import json
 
 def download_video(video_url, user_id):
     """TODO:
-        userID is obtained from cookies (needed in case multiple people use service at once)
         need to add error checking for invalid URL"""
 
-    save_path = '../video'
+    save_path = './static/video'
     YouTube(video_url).streams.filter(file_extension='mp4',
                                       progressive=True).first().download(
-        output_path=save_path, filename="video.mp4",
-        filename_prefix="{uuid}_".format(uuid=user_id))
+        output_path=save_path,
+        filename='{user_id}.mp4'.format(user_id=user_id))
+    return YouTube(video_url).title
 
 
 def setup_stt():
@@ -31,12 +31,13 @@ def setup_stt():
 def process_audio(video_filepath, user_id):
     chunk_number = 0
     chunk_duration = 5
+    overlap = 0.5  # 0.5 second overlap between each chunk
     full_audio_clip = VideoFileClip(video_filepath).audio
     total_duration = int(full_audio_clip.duration)
     current_duration = 0
     stt = setup_stt()
     transcript_dict = {}
-    transcript_path = "../transcripts/{uuid}_transcript.json".format(
+    transcript_path = "../transcripts/{uuid}.json".format(
         uuid=user_id)
 
     for i in range(
@@ -44,14 +45,14 @@ def process_audio(video_filepath, user_id):
 
         chunk_file_path = "../audio/{uuid}_{chunk_number}.mp3".format(
             uuid=user_id, chunk_number=chunk_number)
-        if i == (
-                total_duration // chunk_duration):  # checking for last iteration
+
+        if current_duration + chunk_duration + overlap > total_duration:
             clip = full_audio_clip.subclip(current_duration)
 
         else:
             # create subclip starting from the current duration
             clip = full_audio_clip.subclip(current_duration,
-                                           current_duration + chunk_duration + 0.5)  # 0.5 second overlap between each chunk
+                                           current_duration + chunk_duration + overlap)
         # save the subclip
         clip.write_audiofile(chunk_file_path)
 
@@ -77,7 +78,7 @@ def transcribe_audio(stt, user_id, chunk_number):
                                                           chunk_number=chunk_number),
               'rb') as f:
         response = stt.recognize(audio=f, content_type='audio/mp3',
-                                 model='en-GB_BroadbandModel').get_result()
+                                 model='en-US_BroadbandModel').get_result()
         chunk_text = ""
 
         for section in response["results"]:
