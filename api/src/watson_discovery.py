@@ -50,10 +50,12 @@ def query_transcript(discovery, document_id, user_query):
         passages=True,
         passages_count=3  # number of passages to return
     ).get_result()
-    return [{"passage_text": matching_passage["passage_text"],
-             "timestamp": int(matching_passage["field"]) * chunk_duration} for
-            matching_passage
-            in result["passages"]]
+
+    # returns a dictionary where the key is passage text and the value is a dictionary of the score and timestamp
+    return {matching_passage["passage_text"]: {
+        "passage_score": matching_passage["passage_score"],
+        "timestamp": int(matching_passage["field"]) * chunk_duration} for
+        matching_passage in result["passages"]}
 
 
 def delete_transcript(discovery, document_id):

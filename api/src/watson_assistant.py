@@ -2,10 +2,9 @@ from ibm_watson import AssistantV2
 from ibm_watson.assistant_v2 import MessageInputStateless
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from environment import assistant_api_key, assistant_url, assistant_id
-import json
 import re
 
-from watson_discovery import query_transcript
+from watson_discovery import query_transcript, setup_discovery
 
 
 def setup_assistant():
@@ -27,20 +26,20 @@ def send_stateless_message(text):
         # can also just use a dict instead like the docs
         input=MessageInputStateless(text=text)
     ).get_result()
-    print(response)
+
     # extract query information from Watson assistant
     if process_quote(response):
-        user_query = process_quote(response)
+        extracted_query = process_quote(response)
     elif process_concept(response):
-        user_query = process_concept(response)
-    else:
-        user_query = text
+        extracted_query = process_concept(response)
 
-    return user_query
+    return {"extracted query": extracted_query,
+            "user input": clean_string(text)}
 
 
 def process_quote(response):
-    if response["output"]["intents"][0]["intent"] == "GetQuote":
+    # Check if the quote variable exists
+    if "user_defined" in response["context"]["skills"]["main skill"]:
         quote = response["context"]["skills"]["main skill"]["user_defined"][
             "quote"]
         return clean_string(quote)
@@ -60,4 +59,32 @@ def clean_string(string):
     return re.sub('\W+', ' ', string)
 
 
-print(send_stateless_message('what is the future of self-driving cars'))
+def watson_assistant_query(text, document_id):
+    discovery = setup_discovery()
+
+    # send query to watson assistant and receive response
+    query_dict = send_stateless_message(text)
+
+    # send watson assistant response as query to watson discovery
+    results = query_transcript(discovery, document_id,
+                               query_dict["extracted query"])
+
+    # send user input as query to watson discovery
+    user_input_results = query_transcript(discovery, document_id,
+                                          query_dict["user input"])
+    # combine both dictionaries
+    results.update(user_input_results)
+
+    # order the results by passage score
+    ordered_results = []
+    for result in sorted(results, key=lambda x: (results[x]['passage_score']),
+                         reverse=True):
+        ordered_results.append({result: results[result]})
+
+    return ordered_results[0:2]  # return top 2 results
+
+
+document_id = "b483a604-3736-4406-b88c-d3add2016b07"
+print(
+    watson_assistant_query('tell me when Some AI focuses solely on one task',
+                           document_id))
