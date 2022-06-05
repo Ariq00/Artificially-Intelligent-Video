@@ -8,6 +8,7 @@
           rel="stylesheet"
           integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
           crossorigin="anonymous">
+    <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet"/>
 </head>
 <body>
 
@@ -41,59 +42,45 @@
     </div>
 </nav>
 
-<!--YouTube URL Box-->
-<section class="pt-4">
+<section class="pt-5">
     <div class="container">
-        <form class="row">
-            <div class="col-sm-6">
-                <label for="youtubeUrl" class="visually-hidden">YouTube
-                    URL</label>
-                <input type="url" class="form-control" id="youtubeUrl"
-                       placeholder="Enter YouTube URL">
+
+        <div class="row">
+            <h1>Video Title</h1>
+        </div>
+        <div class="row">
+            <!--Video Player-->
+            <div class="col-sm-8 px-3">
+                <video
+                        id="my-video"
+                        class="video-js vjs-default-skin vjs-16-9"
+                        controls
+                        preload="auto"
+                        width="100%"
+                        height="100%"
+                        data-setup="{'fluid': true}"
+                        muted
+                        autoplay
+                >
+                    <source src="../../video/1_video.mp4" type="video/mp4"/>
+                </video>
+                <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
             </div>
 
-            <div class="col-sm-4">
-                <button type="submit" class="btn btn-primary mb-3">Proceed with
-                    YouTube Video
-                </button>
+
+            <!--Chat box-->
+            <div class="col-sm-4 bg-danger">
+                Chatbot goes here
             </div>
-        </form>
+
+        </div>
     </div>
-</section>
-
-<!--Upload form-->
-<section class="pt-3">
-    <div class="container">
-        <form>
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <label for="formFile" class="form-label">Alternatively
-                        upload an MP4 file</label>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-
-                <div class="col-sm-4">
-                    <button type="submit" class="btn btn-primary mb-3">Proceed
-                        with Video File
-                    </button>
-                </div>
-
-            </div>
-        </form>
-    </div>
-
 </section>
 
 <!--Instructions for how it works-->
 <section class="pt-5">
     <div class="container">
-        <h1>How it Works</h1>
+        <h1>Query Another Video</h1>
         <p class="lead my-3">
             1. Paste the URL for your YouTube video or upload an MP4 file.
             <br>
@@ -104,6 +91,7 @@
         </p>
 
     </div>
+
 
 </section>
 
