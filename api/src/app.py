@@ -2,9 +2,11 @@ from flask import Flask, session, render_template, request
 import uuid
 from transcribe import download_video, process_audio
 import watson_discovery
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = "such_a_secret"
+app.config["UPLOAD_FOLDER"] = "./static/video/"
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -12,12 +14,20 @@ def home():
     # generate uuid for session
     if not session.get("user_id"):
         session["user_id"] = str(uuid.uuid4())
-    user_id = session.get("uuid")
-
+    user_id = session.get("user_id")
     if request.method == "POST":
         if request.form["video"] == "youtube":
             youtube_url = request.form["youtubeUrl"]
             video_title = download_video(youtube_url, user_id)
+
+        else:
+            video_file = request.files["file"]
+            # TODO: Do some error checking on valid file format
+            #        also allow mp3 files
+            #        limit max file size
+            if video_file.filename != "":
+                video_title = secure_filename(video_file.filename)
+                video_file.save(app.config["UPLOAD_FOLDER"] + user_id + ".mp4")
 
         # transcribe audio
         video_filepath = "/video/" + user_id + ".mp4"

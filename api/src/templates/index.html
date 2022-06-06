@@ -66,19 +66,19 @@
 <!--Upload form-->
 <section class="pt-3">
     <div class="container">
-        <form>
+        <form method="POST" action="" enctype="multipart/form-data">
             <input type="hidden" name="video" value="file">
             <div class="row">
                 <div class="col-sm-6">
-                    <label for="formFile" class="form-label">Alternatively
+                    <label for="file" class="form-label">Alternatively
                         upload an MP4 file</label>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-6">
-                    <input class="form-control" type="file" name="formFile"
-                           id="formFile">
+                    <input class="form-control" type="file" name="file"
+                           id="file">
                 </div>
 
                 <div class="col-sm-4">
