@@ -3,9 +3,10 @@ import uuid
 from transcribe import download_video, process_audio
 import watson_discovery
 from werkzeug.utils import secure_filename
+from environment import secret_key
 
 app = Flask(__name__)
-app.secret_key = "such_a_secret"
+app.secret_key = secret_key
 app.config["UPLOAD_FOLDER"] = "./static/video/"
 
 

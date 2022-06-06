@@ -14,3 +14,5 @@ discovery_api_key = os.environ.get("DISCOVERY_API_KEY")
 discovery_url = os.environ.get("DISCOVERY_URL")
 discovery_environment_id = os.environ.get("DISCOVERY_ENVIRONMENT_ID")
 discovery_collection_id = os.environ.get("DISCOVERY_COLLECTION_ID")
+
+secret_key = os.environ.get("SECRET_KEY")
