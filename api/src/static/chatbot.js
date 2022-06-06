@@ -5,15 +5,13 @@ class Chatbox {
             chatBox: document.querySelector('.chatbox__support'),
             sendButton: document.querySelector('.send__button')
         }
-
-        this.state = false;
         this.messages = [];
     }
 
     display() {
-        const {openButton, chatBox, sendButton} = this.args;
-        openButton.addEventListener('click', () => this.toggleState(chatBox))
+        const {chatBox, sendButton} = this.args;
         sendButton.addEventListener('click', () => this.onSendButton(chatBox))
+        chatBox.classList.add('chatbox--active')
 
         const node = chatBox.querySelector('input');
         node.addEventListener("keyup", ({key}) => {
@@ -21,17 +19,6 @@ class Chatbox {
                 this.onSendButton(chatBox)
             }
         })
-    }
-
-    toggleState(chatbox) {
-        this.state = !this.state;
-
-        // show or hides the box
-        if (this.state) {
-            chatbox.classList.add('chatbox--active')
-        } else {
-            chatbox.classList.remove('chatbox -- active')
-        }
     }
 
     onSendButton(chatbox) {
