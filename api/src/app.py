@@ -1,9 +1,10 @@
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, jsonify
 import uuid
 from transcribe import download_video, process_audio
 import watson_discovery
 from werkzeug.utils import secure_filename
 from environment import secret_key
+from watson_assistant import watson_assistant_query, process_watson_results
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -48,23 +49,17 @@ def home():
     return render_template("index.html")
 
 
-# @app.route
-# def get_watson_response():
-#     pass
-
-
 @app.route('/video', methods=['GET'])
 def video_page():
     return render_template("video.html")
 
 
-@app.post("/predict")
-def predict():
-    from flask import jsonify
+@app.route("/watson_response", methods=["POST"])
+def watson_response():
     text = request.get_json().get("message")
-    response = "You said the following: " + text
-    message = {"answer": response}
-    return jsonify(message)
+    watson_results = watson_assistant_query(text, session["document_id"])
+    messages = process_watson_results(watson_results)
+    return jsonify(messages)
 
 
 if __name__ == "__main__":

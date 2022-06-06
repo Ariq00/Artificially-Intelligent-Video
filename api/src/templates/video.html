@@ -37,7 +37,7 @@
                        class="nav-link">FAQs</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#signup" class="nav-link">Sign Up</a>
+                    <a id="videoJump" href="#" class="nav-link">Jump Video</a>
                 </li>
                 <li class="nav-item">
                     <a href="#login" class="nav-link">Login</a>
@@ -57,7 +57,7 @@
             <!--Video Player-->
             <div class="col-sm-8 px-3">
                 <video
-                        id="my-video"
+                        id="videoDemo"
                         class="video-js vjs-default-skin vjs-16-9"
                         controls
                         preload="auto"
@@ -65,7 +65,9 @@
                         height="100%"
                         data-setup="{'fluid': true}"
                 >
-                    <source src="{{ url_for('static', filename=video_filepath) }}"
+                    {#                    <source src="{{ url_for('static', filename=video_filepath) }}"#}
+                    {#                            type="video/mp4"/>#}
+                    <source src="{{ url_for('static', filename="video/Bitcoin Video.mp4") }}"
                             type="video/mp4"/>
                 </video>
                 <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
@@ -110,6 +112,16 @@
         </div>
     </div>
 </section>
+
+<script>
+    const timestamp = document.getElementById("videoJump");
+    const video = document.getElementById("videoDemo");
+    timestamp.addEventListener("click", function (event) {
+        event.preventDefault();
+        video.currentTime = 17;
+        video.play();
+    }, false);
+</script>
 
 <!--Something else-->
 <section class="pt-5">

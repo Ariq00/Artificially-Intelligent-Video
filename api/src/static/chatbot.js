@@ -30,8 +30,7 @@ class Chatbox {
 
         let msg1 = {name: "User", message: text1}
         this.messages.push(msg1);
-        //'http://127.0.0.1:5000/predict
-        fetch($SCRIPT_ROOT + '/predict', {
+        fetch($SCRIPT_ROOT + '/watson_response', {
             method: 'POST',
             body: JSON.stringify({message: text1}),
             mode: 'cors',
@@ -41,8 +40,12 @@ class Chatbox {
         })
             .then(r => r.json())
             .then(r => {
-                let msg2 = {name: "Sam", message: r.answer};
+                let msg2 = {name: "SmartVideo", message: r.message1};
                 this.messages.push(msg2);
+                if (r.message2) {
+                    let msg3 = {name: "SmartVideo", message: r.message2}
+                    this.messages.push(msg3)
+                }
                 this.updateChatText(chatbox)
                 textField.value = ''
 
@@ -57,7 +60,7 @@ class Chatbox {
     updateChatText(chatbox) {
         var html = '';
         this.messages.slice().reverse().forEach(function (item, index) {
-            if (item.name === "Sam") {
+            if (item.name === "SmartVideo") {
                 html += '<div class="messages__item messages__item--visitor">' + item.message + '</div>'
             } else {
                 html += '<div class="messages__item messages__item--operator">' + item.message + '</div>'

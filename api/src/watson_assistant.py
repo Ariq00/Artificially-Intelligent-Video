@@ -23,18 +23,21 @@ def send_stateless_message(text):
     # send message to watson assistant
     response = assistant.message_stateless(
         assistant_id=assistant_id,
-        # can also just use a dict instead like the docs
         input=MessageInputStateless(text=text)
     ).get_result()
+    watson_text_response = response["output"]["generic"][0]["text"]
 
     # extract query information from Watson assistant
     if process_quote(response):
         extracted_query = process_quote(response)
     elif process_concept(response):
         extracted_query = process_concept(response)
+    else:
+        extracted_query = False
 
     return {"extracted query": extracted_query,
-            "user input": clean_string(text)}
+            "user input": clean_string(text),
+            "text response": watson_text_response}
 
 
 def process_quote(response):
@@ -48,9 +51,10 @@ def process_quote(response):
 
 
 def process_concept(response):
-    if response["output"]["intents"][0]["intent"] == "GetConcept":
-        concept = response["output"]["entities"][0]["value"]
-        return clean_string(concept)
+    if len(response["output"]["intents"]) != 0:
+        if response["output"]["intents"][0]["intent"] == "GetConcept":
+            concept = response["output"]["entities"][0]["value"]
+            return clean_string(concept)
     else:
         return False
 
@@ -66,8 +70,10 @@ def watson_assistant_query(text, document_id):
     query_dict = send_stateless_message(text)
 
     # send watson assistant response as query to watson discovery
-    results = query_transcript(discovery, document_id,
-                               query_dict["extracted query"])
+    results = {}
+    if query_dict["extracted query"]:  # check watson extracted a query
+        results = query_transcript(discovery, document_id,
+                                   query_dict["extracted query"])
 
     # send user input as query to watson discovery
     user_input_results = query_transcript(discovery, document_id,
@@ -79,11 +85,55 @@ def watson_assistant_query(text, document_id):
     ordered_results = []
     for result in sorted(results, key=lambda x: (results[x]['passage_score']),
                          reverse=True):
-        ordered_results.append({result: results[result]})
+        ordered_results.append({'timestamp': results[result]['timestamp']})
 
-    return ordered_results[0:2]  # return top 2 results
+    watson_results = {"top_results": ordered_results[0:2],
+                      "text_response": query_dict[
+                          "text response"], "extracted query": query_dict[
+            "extracted query"]}  # return top 2 results
 
-# document_id = "b483a604-3736-4406-b88c-d3add2016b07"
+    return watson_results
+
+
+def process_watson_results(watson_results):
+    # watson_results = {'top_results': [{'timestamp': 40}],
+    #                   'text_response': "I didn't understand. You can try rephrasing. Alternatively use quotation marks for your query.",
+    #                   'extracted query': False}
+    top_results, message1 = watson_results["top_results"], watson_results[
+        "text_response"]
+    query_understood = True if watson_results["extracted query"] else False
+    messages = {"message1": message1}
+
+    # no results and couldn't understand query - don't need to do anything
+
+    # got results but didn't understand the query
+    if len(top_results) != 0 and not query_understood:
+        message1 = f"{top_results[0]['timestamp']} may have what you're looking for. Try rephrasing if this isn't what you were looking for"
+
+        if len(top_results) > 1:
+            message2 = f"Alternatively {top_results[1]['timestamp']} may have what you need."
+            messages["message2"] = message2
+
+        messages["message1"] = message1
+
+    # no results but understood the query
+    elif len(top_results) == 0 and query_understood:
+        message2 = "Unfortunately I couldn't find anything in the video matching your query. You can try rephrasing or using quotation marks for an exact match."
+        messages["message2"] = message2
+
+    # got results and understood the query
+    elif len(top_results) != 0 and query_understood:
+        message2 = f"{top_results[0]['timestamp']} has what you are looking for. "
+        if len(top_results) > 1:
+            message2 += f"If not, {top_results[1]['timestamp']} may have what you need. "
+
+        messages["message2"] = message2
+
+    return messages
+
+# document_id = "b483a604-3736-4406-b88c-d3add2016b07" # ai video
 # print(
-#     watson_assistant_query('what is the future of AI',
+#     watson_assistant_query('miners',
 #                            document_id))
+
+# print(send_stateless_message("hello"))
