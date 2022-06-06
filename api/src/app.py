@@ -48,5 +48,24 @@ def home():
     return render_template("index.html")
 
 
+# @app.route
+# def get_watson_response():
+#     pass
+
+
+@app.route('/video', methods=['GET'])
+def video_page():
+    return render_template("video.html")
+
+
+@app.post("/predict")
+def predict():
+    from flask import jsonify
+    text = request.get_json().get("message")
+    response = "You said the following: " + text
+    message = {"answer": response}
+    return jsonify(message)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
