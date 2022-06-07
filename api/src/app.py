@@ -4,7 +4,7 @@ from transcribe import download_video, process_audio
 import watson_discovery
 from werkzeug.utils import secure_filename
 from environment import secret_key
-from watson_assistant import watson_assistant_query, process_watson_results
+from watson_assistant import watson_assistant_query
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -58,8 +58,17 @@ def video_page():
 def watson_response():
     text = request.get_json().get("message")
     watson_results = watson_assistant_query(text, session["document_id"])
-    messages = process_watson_results(watson_results)
-    return jsonify(messages)
+
+    timestamps = []
+    for result in watson_results["top_results"]:
+        timestamps.append(result["timestamp"])
+
+    message = watson_results["text_response"]
+
+    if len(timestamps) != 0 and not watson_results["extracted query"]:
+        message = "I queried the video with your exact input."
+
+    return jsonify({"timestamps": timestamps, "message": message})
 
 
 if __name__ == "__main__":

@@ -94,42 +94,58 @@ def watson_assistant_query(text, document_id):
 
     return watson_results
 
+# def process_watson_results(watson_results):
+#     # watson_results = {'top_results': [{'timestamp': 40}],
+#     #                   'text_response': "I didn't understand. You can try rephrasing. Alternatively use quotation marks for your query.",
+#     #                   'extracted query': False}
+#     top_results, message1 = watson_results["top_results"], watson_results[
+#         "text_response"]
+#     query_understood = True if watson_results["extracted query"] else False
+#     messages = {"message1": message1}
+#
+#     # no results and couldn't understand query - don't need to do anything
+#
+#     # got results but didn't understand the query
+#     if len(top_results) != 0 and not query_understood:
+#         message1 = f"{top_results[0]['timestamp']} may have what you're looking for. Try rephrasing if this isn't what you were looking for"
+#
+#         if len(top_results) > 1:
+#             message2 = f"Alternatively {top_results[1]['timestamp']} may have what you need."
+#             messages["message2"] = message2
+#
+#         messages["message1"] = message1
+#
+#     # no results but understood the query
+#     elif len(top_results) == 0 and query_understood:
+#         message2 = "Unfortunately I couldn't find anything in the video matching your query. You can try rephrasing or using quotation marks for an exact match."
+#         messages["message2"] = message2
+#
+#     # got results and understood the query
+#     elif len(top_results) != 0 and query_understood:
+#         message2 = f"{top_results[0]['timestamp']} has what you are looking for. "
+#         if len(top_results) > 1:
+#             message2 += f"If not, {top_results[1]['timestamp']} may have what you need. "
+#
+#         messages["message2"] = message2
+#
+#     return messages
 
-def process_watson_results(watson_results):
-    # watson_results = {'top_results': [{'timestamp': 40}],
-    #                   'text_response': "I didn't understand. You can try rephrasing. Alternatively use quotation marks for your query.",
-    #                   'extracted query': False}
-    top_results, message1 = watson_results["top_results"], watson_results[
-        "text_response"]
-    query_understood = True if watson_results["extracted query"] else False
-    messages = {"message1": message1}
 
-    # no results and couldn't understand query - don't need to do anything
+# def process_watson_results():
+#     timestamps = []
+#     for result in watson_results["top_results"]:
+#         timestamps.append(result["timestamp"])
+#
+#     message = watson_results["text_response"]
+#
+#     if len(timestamps) != 0 and not watson_results["extracted query"]:
+#         message = "I queried the video with your exact input."
+#
+#     if len(timestamps) == 0:
+#         message += "\n\n Unfortunately I didn't find any results. Try rephrasing."
+#
+#     return jsonify({"timestamps": timestamps, "message": message})
 
-    # got results but didn't understand the query
-    if len(top_results) != 0 and not query_understood:
-        message1 = f"{top_results[0]['timestamp']} may have what you're looking for. Try rephrasing if this isn't what you were looking for"
-
-        if len(top_results) > 1:
-            message2 = f"Alternatively {top_results[1]['timestamp']} may have what you need."
-            messages["message2"] = message2
-
-        messages["message1"] = message1
-
-    # no results but understood the query
-    elif len(top_results) == 0 and query_understood:
-        message2 = "Unfortunately I couldn't find anything in the video matching your query. You can try rephrasing or using quotation marks for an exact match."
-        messages["message2"] = message2
-
-    # got results and understood the query
-    elif len(top_results) != 0 and query_understood:
-        message2 = f"{top_results[0]['timestamp']} has what you are looking for. "
-        if len(top_results) > 1:
-            message2 += f"If not, {top_results[1]['timestamp']} may have what you need. "
-
-        messages["message2"] = message2
-
-    return messages
 
 # document_id = "b483a604-3736-4406-b88c-d3add2016b07" # ai video
 # print(
