@@ -39,16 +39,11 @@ class Chatbox {
             },
         })
             .then(r => r.json())
+            .then(r => this.addTimeStamps(chatbox, r))
             .then(r => {
-                    let msg2 = {
-                        name: "SmartVideo",
-                        results: this.addTimeStamps(chatbox, r)
-                    };
-                    this.messages.push(msg2);
-                    this.messages.push(msg2);
-                    this.updateChatText(chatbox, results)
+                    this.messages.push({name: "SmartVideo", message: r.message});
+                    this.updateChatText(chatbox, r)
                     textField.value = ''
-
                 }
             )
             .catch((error) => {
@@ -95,9 +90,9 @@ class Chatbox {
         var html = '';
         this.messages.slice().reverse().forEach(function (item, index) {
             if (item.name === "SmartVideo") {
-                html += '<div class="messages__item messages__item--visitor">' + item.results.message + '</div>'
+                html += '<div class="messages__item messages__item--visitor">' + item.message + '</div>'
             } else {
-                html += '<div class="messages__item messages__item--operator">' + item.results.message + '</div>'
+                html += '<div class="messages__item messages__item--operator">' + item.message + '</div>'
             }
         });
 
@@ -105,16 +100,18 @@ class Chatbox {
         chatmessage.innerHTML = html;
 
         //    add video jumps to timestamps
-        // if (results.timestamp1 !== undefined) {
-        //     make_timestamps_clickable(results.uuid1, results.timestamp1)
-        // }
-        // if (results.timestamp2 !== undefined) {
-        //     make_timestamps_clickable(results.uuid2, results.timestamp2)
-        // }
+        if (results.timestamp1 !== undefined) {
+            make_timestamps_clickable(results.uuid1, results.timestamp1)
+        }
+        if (results.timestamp2 !== undefined) {
+            make_timestamps_clickable(results.uuid2, results.timestamp2)
+        }
     }
 }
 
-function generateUUID() {
+function
+
+generateUUID() {
     // credit: https://github.com/IBM/audio_search_on_podcasts/blob/master/static/videojs-markers.js
     var d = new Date().getTime();
     var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -126,18 +123,22 @@ function generateUUID() {
 }
 
 
-function make_timestamps_clickable(id, timestamp) {
+function
+
+make_timestamps_clickable(id, timestamp) {
     const timestampElement = document.getElementById(id);
     const video = document.getElementById("videoDemo");
     console.log(timestampElement)
     timestampElement.addEventListener("click", function (event) {
         event.preventDefault();
         video.currentTime = timestamp;
-        video.play();
+        // video.play();
     }, false);
 }
 
-function secondsToMinutes(s) {
+function
+
+secondsToMinutes(s) {
     return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s
 }
 
