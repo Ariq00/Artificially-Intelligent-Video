@@ -49,13 +49,9 @@ def home():
     return render_template("index.html")
 
 
-# THIS ROUTE IS FOR TESTING
-@app.route('/video_test', methods=['GET'])
-def video_testing_page():
-    session["document_id"] = "778f2aad-1dc6-4ba1-88c5-864cc2cef228"
-    return render_template("video.html",
-                           video_filepath="/video/Bitcoin Video.mp4",
-                           video_title="Bitcoin Video.mp4")
+@app.route('/video', methods=['GET'])
+def video_page():
+    return render_template("video.html")
 
 
 @app.route("/watson_response", methods=["POST"])
@@ -73,6 +69,15 @@ def watson_response():
         message = "I queried the video with your exact input."
 
     return jsonify({"timestamps": timestamps, "message": message})
+
+
+# THIS ROUTE IS FOR TESTING
+@app.route('/video_test', methods=['GET'])
+def video_testing_page():
+    session["document_id"] = "66097691-d0f9-41db-b030-24fac3b0d813"
+    return render_template("video.html",
+                           video_filepath="/video/Bitcoin Video.mp4",
+                           video_title="Bitcoin Video.mp4")
 
 
 if __name__ == "__main__":
