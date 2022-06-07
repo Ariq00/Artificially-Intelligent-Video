@@ -22,6 +22,7 @@ def home():
     user_id = session.get("user_id")
 
     if request.method == "POST":
+        file_ext = ".mp4"  # set default file extension
 
         if request.form["video"] == "youtube":
             youtube_url = request.form["youtubeUrl"]
@@ -33,33 +34,35 @@ def home():
 
             # catch all other exceptions
             try:
-                video_title = download_video(youtube_url, user_id)
+                media_title = download_video(youtube_url, user_id)
             except PytubeError as e:
                 flash(str(e), "danger")
                 return redirect(url_for("home"))
 
         else:  # If video file was uploaded instead
-            video_file = request.files["file"]
+            media_file = request.files["file"]
 
             # check if file has been uploaded
-            if video_file.filename == "":
-                flash("Please upload an MP4 file first!", "danger")
+            if media_file.filename == "":
+                flash("Please upload an MP3 or MP4 file first!", "danger")
                 return redirect(url_for("home"))
 
             else:
-                video_title = secure_filename(video_file.filename)
+                media_title = secure_filename(media_file.filename)
+                file_ext = media_title[
+                           -4:]  # check file extension of uploaded file
 
                 # check file extension
-                if not video_title.endswith('.mp4'):
-                    flash("Please upload a valid MP4 file!", "danger")
+                if file_ext not in [".mp3", ".mp4"]:
+                    flash("Please upload a valid MP3 or MP4 file!", "danger")
                     return redirect(url_for("home"))
 
-                video_file.save(app.config["UPLOAD_FOLDER"] + user_id + ".mp4")
+            media_file.save(app.config["UPLOAD_FOLDER"] + user_id + file_ext)
 
         # transcribe audio
-        video_filepath = "/video/" + user_id + ".mp4"
-        static_video_filepath = "./static" + video_filepath
-        process_audio(static_video_filepath, user_id)
+        media_filepath = "/video/" + user_id + file_ext
+        static_media_filepath = "./static" + media_filepath
+        process_audio(static_media_filepath, user_id)
 
         # upload to discovery
         transcript_filename = f"{user_id}.json"
@@ -68,8 +71,8 @@ def home():
                                                                     transcript_filename)
 
         return render_template("video.html",
-                               video_filepath=video_filepath,
-                               video_title=video_title)
+                               video_filepath=media_filepath,
+                               video_title=media_title)
 
     return render_template("index.html")
 
