@@ -108,6 +108,10 @@ class Chatbox {
         }
         // removes the last 2 messages
         this.messages.splice(this.messages.length - 2, 2)
+
+        // scroll to bottom of messages
+        const element = document.getElementById("chatbox_messages");
+        element.scrollTop = element.scrollHeight;
     }
 }
 
