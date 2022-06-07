@@ -97,7 +97,7 @@ class Chatbox {
         });
 
         const chatmessage = chatbox.querySelector('.chatbox__messages');
-        chatmessage.innerHTML = html;
+        chatmessage.insertAdjacentHTML("afterbegin", html);
 
         //    add video jumps to timestamps
         if (results.timestamp1 !== undefined) {
@@ -106,6 +106,8 @@ class Chatbox {
         if (results.timestamp2 !== undefined) {
             make_timestamps_clickable(results.uuid2, results.timestamp2)
         }
+        // removes the last 2 messages
+        this.messages.splice(this.messages.length - 2, 2)
     }
 }
 
