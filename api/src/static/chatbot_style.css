@@ -182,6 +182,7 @@ body {
     cursor: pointer;
 }
 
+/*typing indicator from https://jsfiddle.net/Arlina/gtttgo93/*/
 .typing-indicator {
     background-color: #E6E7ED;
     width: 30%;
