@@ -1,127 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='chatbot_style.css') }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SmartVideo</title>
-    <link rel="shortcut icon"
-          href="{{ url_for('static', filename='images/favicon.ico') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
-          crossorigin="anonymous">
+{% extends 'layout.html' %}
+{% block content %}
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='chatbot_style.css') }}">
     <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet"/>
-</head>
-<body>
+    
+    <section class="pt-5">
+        <div class="container">
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 static-top">
-    <div class="container">
-        <a href="{{ url_for('home') }}" class="navbar-brand">SmartVideo</a>
-
-        <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navmenu"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navmenu">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a href="{{ url_for('video_testing_page') }}"
-                       class="nav-link">FAQs</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#login" class="nav-link">Login</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<section class="pt-5">
-    <div class="container">
-
-        <div class="row">
-            <h1>{{ video_title }}</h1>
-        </div>
-        <div class="row">
-            <!--Video Player-->
-            <div class="col-sm-8 px-3">
-                <video
-                        id="videoDemo"
-                        class="video-js vjs-default-skin vjs-16-9"
-                        controls
-                        preload="auto"
-                        width="100%"
-                        height="100%"
-                        data-setup="{'fluid': true}"
-                >
-                    <source src="{{ url_for('static', filename=video_filepath) }}"
-                            type="video/mp4"/>
-                </video>
-                <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
+            <div class="row">
+                <h1>{{ video_title }}</h1>
             </div>
-
-
-            <!--Chat box-->
-            <div class="col-sm-4">
-                <div class="chatbox__support">
-                    <div class="chatbox__header">
-                        <div class="chatbox__image--header">
-                            <img src="https://img.icons8.com/fluency/48/undefined/chatbot.png"
-                                 alt="image">
-                        </div>
-                        <div class="chatbox__content--header">
-                            <h4 class="chatbox__heading--header">
-                                SmartVideo Assistant</h4>
-                            <p class="chatbox__description--header">
-                                What would you like to know about the
-                                video?</p>
-                        </div>
-                    </div>
-                    <div class="chatbox__messages" id="chatbox_messages">
-                        <div></div>
-                    </div>
-                    <div class="chatbox__footer">
-                        <input type="text"
-                               placeholder="Write a message...">
-                        <button class="chatbox__send--footer send__button">
-                            Send
-                        </button>
-                    </div>
+            <div class="row">
+                <!--Video Player-->
+                <div class="col-sm-8 px-3">
+                    <video
+                            id="videoDemo"
+                            class="video-js vjs-default-skin vjs-16-9"
+                            controls
+                            preload="auto"
+                            width="100%"
+                            height="100%"
+                            data-setup="{'fluid': true}"
+                    >
+                        <source src="{{ url_for('static', filename=video_filepath) }}"
+                                type="video/mp4"/>
+                    </video>
+                    <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
                 </div>
 
-                <script>
-                    $SCRIPT_ROOT = {{ request.script_root|tojson }};
-                </script>
-                <script type="text/javascript"
-                        src="{{ url_for('static', filename='chatbot.js') }}"></script>
+
+                <!--Chat box-->
+                <div class="col-sm-4">
+                    <div class="chatbox__support">
+                        <div class="chatbox__header">
+                            <div class="chatbox__image--header">
+                                <img src="https://img.icons8.com/fluency/48/undefined/chatbot.png"
+                                     alt="image">
+                            </div>
+                            <div class="chatbox__content--header">
+                                <h4 class="chatbox__heading--header">
+                                    SmartVideo Assistant</h4>
+                                <p class="chatbox__description--header">
+                                    What would you like to know about the
+                                    video?</p>
+                            </div>
+                        </div>
+                        <div class="chatbox__messages" id="chatbox_messages">
+                            <div></div>
+                        </div>
+                        <div class="chatbox__footer">
+                            <input type="text"
+                                   placeholder="Write a message...">
+                            <button class="chatbox__send--footer send__button">
+                                Send
+                            </button>
+                        </div>
+                    </div>
+
+                    <script>
+                        $SCRIPT_ROOT = {{ request.script_root|tojson }};
+                    </script>
+                    <script type="text/javascript"
+                            src="{{ url_for('static', filename='chatbot.js') }}"></script>
+                </div>
+
             </div>
-
         </div>
-    </div>
-</section>
+    </section>
 
-<!--Something else-->
-<section class="pt-5">
-    <div class="container">
-        {#something else can go here#}
-    </div>
+    <!--Something else-->
+    <section class="pt-5">
+        <div class="container">
+            {#something else can go here#}
+        </div>
+    </section>
 
-
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}
