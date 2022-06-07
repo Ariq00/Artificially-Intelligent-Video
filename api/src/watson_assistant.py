@@ -87,6 +87,14 @@ def watson_assistant_query(text, document_id):
                          reverse=True):
         ordered_results.append({'timestamp': results[result]['timestamp']})
 
+    # remove timestamps which are 5 seconds apart (keeps the first timestamp)
+    close_timestamps = []
+    for result in ordered_results:
+        close_timestamps.extend(
+            [result["timestamp"] - 5, result["timestamp"] + 5])
+        if result['timestamp'] in close_timestamps:
+            ordered_results.remove(result)
+
     watson_results = {"top_results": ordered_results[0:2],
                       "text_response": query_dict[
                           "text response"], "extracted query": query_dict[
