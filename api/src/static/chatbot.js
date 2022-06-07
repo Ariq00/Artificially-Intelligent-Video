@@ -109,9 +109,7 @@ class Chatbox {
     }
 }
 
-function
-
-generateUUID() {
+function generateUUID() {
     // credit: https://github.com/IBM/audio_search_on_podcasts/blob/master/static/videojs-markers.js
     var d = new Date().getTime();
     var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -123,22 +121,17 @@ generateUUID() {
 }
 
 
-function
-
-make_timestamps_clickable(id, timestamp) {
+function make_timestamps_clickable(id, timestamp) {
     const timestampElement = document.getElementById(id);
-    const video = document.getElementById("videoDemo");
-    console.log(timestampElement)
+    const video = document.getElementById("videoDemo_html5_api"); // have to use this ID for some reason
     timestampElement.addEventListener("click", function (event) {
         event.preventDefault();
         video.currentTime = timestamp;
-        // video.play();
+        video.play();
     }, false);
 }
 
-function
-
-secondsToMinutes(s) {
+function secondsToMinutes(s) {
     return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s
 }
 

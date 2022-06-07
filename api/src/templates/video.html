@@ -33,11 +33,11 @@
         <div class="collapse navbar-collapse" id="navmenu">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a href="{{ url_for('video_page') }}"
+                    <a href="{{ url_for('video_testing_page') }}"
                        class="nav-link">FAQs</a>
                 </li>
                 <li class="nav-item">
-                    <a id="videoJump" href="#" class="nav-link">Jump Video</a>
+                    <a href="#" class="nav-link">Sign Up</a>
                 </li>
                 <li class="nav-item">
                     <a href="#login" class="nav-link">Login</a>
@@ -65,9 +65,7 @@
                         height="100%"
                         data-setup="{'fluid': true}"
                 >
-                    {#                    <source src="{{ url_for('static', filename=video_filepath) }}"#}
-                    {#                            type="video/mp4"/>#}
-                    <source src="{{ url_for('static', filename="video/Bitcoin Video.mp4") }}"
+                    <source src="{{ url_for('static', filename=video_filepath) }}"
                             type="video/mp4"/>
                 </video>
                 <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
@@ -112,16 +110,6 @@
         </div>
     </div>
 </section>
-
-<script>
-    const timestamp = document.getElementById("videoJump");
-    const video = document.getElementById("videoDemo");
-    timestamp.addEventListener("click", function (event) {
-        event.preventDefault();
-        video.currentTime = 17;
-        video.play();
-    }, false);
-</script>
 
 <!--Something else-->
 <section class="pt-5">
