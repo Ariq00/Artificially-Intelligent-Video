@@ -1,14 +1,17 @@
-from flask import Flask, session, render_template, request, jsonify
+from flask import Flask, session, render_template, request, jsonify, flash, \
+    redirect, url_for
 import uuid
 from transcribe import download_video, process_audio
 import watson_discovery
 from werkzeug.utils import secure_filename
 from environment import secret_key
 from watson_assistant import watson_assistant_query
+from pytube.exceptions import PytubeError
 
 app = Flask(__name__)
 app.secret_key = secret_key
 app.config["UPLOAD_FOLDER"] = "./static/video/"
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # max upload size is 50mb
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -17,18 +20,40 @@ def home():
     if not session.get("user_id"):
         session["user_id"] = str(uuid.uuid4())
     user_id = session.get("user_id")
+
     if request.method == "POST":
+
         if request.form["video"] == "youtube":
             youtube_url = request.form["youtubeUrl"]
-            video_title = download_video(youtube_url, user_id)
 
-        else:
+            # check if no url is provided
+            if len(youtube_url) == 0:
+                flash("Please enter a YouTube link first!", "danger")
+                return redirect(url_for("home"))
+
+            # catch all other exceptions
+            try:
+                video_title = download_video(youtube_url, user_id)
+            except PytubeError as e:
+                flash(str(e), "danger")
+                return redirect(url_for("home"))
+
+        else:  # If video file was uploaded instead
             video_file = request.files["file"]
-            # TODO: Do some error checking on valid file format
-            #        also allow mp3 files
-            #        limit max file size
-            if video_file.filename != "":
+
+            # check if file has been uploaded
+            if video_file.filename == "":
+                flash("Please upload an MP4 file first!", "danger")
+                return redirect(url_for("home"))
+
+            else:
                 video_title = secure_filename(video_file.filename)
+
+                # check file extension
+                if not video_title.endswith('.mp4'):
+                    flash("Please upload a valid MP4 file!", "danger")
+                    return redirect(url_for("home"))
+
                 video_file.save(app.config["UPLOAD_FOLDER"] + user_id + ".mp4")
 
         # transcribe audio
