@@ -30,6 +30,10 @@ class Chatbox {
 
         let msg1 = {name: "User", message: text1}
         this.messages.push(msg1);
+        // passing in an empty object for results variable
+        this.updateChatText(chatbox, {})
+        textField.value = ''
+        // this.toggleTypingIndicator(chatbox)
         fetch($SCRIPT_ROOT + '/watson_response', {
             method: 'POST',
             body: JSON.stringify({message: text1}),
@@ -95,7 +99,6 @@ class Chatbox {
                 html += '<div class="messages__item messages__item--operator">' + item.message + '</div>'
             }
         });
-
         const chatmessage = chatbox.querySelector('.chatbox__messages');
         chatmessage.insertAdjacentHTML("afterbegin", html);
 
@@ -107,11 +110,20 @@ class Chatbox {
             make_timestamps_clickable(results.uuid2, results.timestamp2)
         }
         // removes the last 2 messages
-        this.messages.splice(this.messages.length - 2, 2)
+        this.messages.pop()
+
+        this.toggleTypingIndicator(chatbox)
 
         // scroll to bottom of messages
         const element = document.getElementById("chatbox_messages");
         element.scrollTop = element.scrollHeight;
+    }
+
+    toggleTypingIndicator(chatbox) {
+        const typingIndicator = document.getElementById("typing-indicator");
+        typingIndicator.hidden = !typingIndicator.hidden;
+        document.getElementById("chatbox_messages").prepend(typingIndicator);
+
     }
 }
 
