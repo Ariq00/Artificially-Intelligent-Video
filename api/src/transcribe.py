@@ -1,5 +1,5 @@
 from pytube import YouTube
-from moviepy.editor import VideoFileClip
+from moviepy.editor import AudioFileClip
 
 from environment import stt_api_key, stt_url
 from ibm_watson import SpeechToTextV1
@@ -32,7 +32,7 @@ def process_audio(video_filepath, user_id):
     chunk_number = 0
     chunk_duration = 5
     overlap = 0.5  # 0.5 second overlap between each chunk
-    full_audio_clip = VideoFileClip(video_filepath).audio
+    full_audio_clip = AudioFileClip(video_filepath)
     total_duration = int(full_audio_clip.duration)
     current_duration = 0
     stt = setup_stt()

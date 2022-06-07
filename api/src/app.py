@@ -1,14 +1,17 @@
-from flask import Flask, session, render_template, request, jsonify
+from flask import Flask, session, render_template, request, jsonify, flash, \
+    redirect, url_for
 import uuid
 from transcribe import download_video, process_audio
 import watson_discovery
 from werkzeug.utils import secure_filename
 from environment import secret_key
 from watson_assistant import watson_assistant_query
+from pytube.exceptions import PytubeError
 
 app = Flask(__name__)
 app.secret_key = secret_key
 app.config["UPLOAD_FOLDER"] = "./static/video/"
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # max upload size is 50mb
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -17,24 +20,49 @@ def home():
     if not session.get("user_id"):
         session["user_id"] = str(uuid.uuid4())
     user_id = session.get("user_id")
+
     if request.method == "POST":
+        file_ext = ".mp4"  # set default file extension
+
         if request.form["video"] == "youtube":
             youtube_url = request.form["youtubeUrl"]
-            video_title = download_video(youtube_url, user_id)
 
-        else:
-            video_file = request.files["file"]
-            # TODO: Do some error checking on valid file format
-            #        also allow mp3 files
-            #        limit max file size
-            if video_file.filename != "":
-                video_title = secure_filename(video_file.filename)
-                video_file.save(app.config["UPLOAD_FOLDER"] + user_id + ".mp4")
+            # check if no url is provided
+            if len(youtube_url) == 0:
+                flash("Please enter a YouTube link first!", "danger")
+                return redirect(url_for("home"))
+
+            # catch all other exceptions
+            try:
+                media_title = download_video(youtube_url, user_id)
+            except PytubeError as e:
+                flash(str(e), "danger")
+                return redirect(url_for("home"))
+
+        else:  # If video file was uploaded instead
+            media_file = request.files["file"]
+
+            # check if file has been uploaded
+            if media_file.filename == "":
+                flash("Please upload an MP3 or MP4 file first!", "danger")
+                return redirect(url_for("home"))
+
+            else:
+                media_title = secure_filename(media_file.filename)
+                file_ext = media_title[
+                           -4:]  # check file extension of uploaded file
+
+                # check file extension
+                if file_ext not in [".mp3", ".mp4"]:
+                    flash("Please upload a valid MP3 or MP4 file!", "danger")
+                    return redirect(url_for("home"))
+
+            media_file.save(app.config["UPLOAD_FOLDER"] + user_id + file_ext)
 
         # transcribe audio
-        video_filepath = "/video/" + user_id + ".mp4"
-        static_video_filepath = "./static" + video_filepath
-        process_audio(static_video_filepath, user_id)
+        media_filepath = "/video/" + user_id + file_ext
+        static_media_filepath = "./static" + media_filepath
+        process_audio(static_media_filepath, user_id)
 
         # upload to discovery
         transcript_filename = f"{user_id}.json"
@@ -43,8 +71,8 @@ def home():
                                                                     transcript_filename)
 
         return render_template("video.html",
-                               video_filepath=video_filepath,
-                               video_title=video_title)
+                               video_filepath=media_filepath,
+                               video_title=media_title)
 
     return render_template("index.html")
 

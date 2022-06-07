@@ -28,10 +28,10 @@ def send_stateless_message(text):
     watson_text_response = response["output"]["generic"][0]["text"]
 
     # extract query information from Watson assistant
-    if process_quote(response):
-        extracted_query = process_quote(response)
-    elif process_concept(response):
-        extracted_query = process_concept(response)
+    if process_intent(response, "quote"):
+        extracted_query = process_intent(response, "quote")
+    elif process_intent(response, "concept"):
+        extracted_query = process_intent(response, "concept")
     else:
         extracted_query = False
 
@@ -40,23 +40,16 @@ def send_stateless_message(text):
             "text response": watson_text_response}
 
 
-def process_quote(response):
-    # Check if the quote variable exists
+def process_intent(response, intent):
     if "user_defined" in response["context"]["skills"]["main skill"]:
-        quote = response["context"]["skills"]["main skill"]["user_defined"][
-            "quote"]
-        return clean_string(quote)
-    else:
-        return False
-
-
-def process_concept(response):
-    if len(response["output"]["intents"]) != 0:
-        if response["output"]["intents"][0]["intent"] == "GetConcept":
-            concept = response["output"]["entities"][0]["value"]
-            return clean_string(concept)
-    else:
-        return False
+        if intent in \
+                response["context"]["skills"]["main skill"]["user_defined"]:
+            intent_variable = \
+                response["context"]["skills"]["main skill"]["user_defined"][
+                    intent]
+            return clean_string(intent_variable)
+        else:
+            return False
 
 
 def clean_string(string):
