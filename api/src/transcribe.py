@@ -39,10 +39,10 @@ def process_audio(video_filepath, user_id):
     transcript_dict = {}
     transcript_path = "../transcripts/{uuid}.json".format(
         uuid=user_id)
+    id_chunk_dict = {}
 
     for i in range(
             total_duration // chunk_duration + 1):  # loop for number of full clips (+1 for final shorter clip)
-
         chunk_file_path = "../audio/{uuid}_{chunk_number}.mp3".format(
             uuid=user_id, chunk_number=chunk_number)
 
@@ -56,9 +56,13 @@ def process_audio(video_filepath, user_id):
         # save the subclip
         clip.write_audiofile(chunk_file_path)
 
-        # transcribe the audio using stt
-        chunk_text = transcribe_audio(stt, user_id, chunk_number)
-        transcript_dict[chunk_number] = chunk_text
+        # create a job in stt
+        with open(chunk_file_path, 'rb') as f:
+            job_id = stt.create_job(audio=f, content_type='audio/mp3',
+                                    model='en-US_BroadbandModel'
+                                    ).get_result()["id"]
+        # map id to a chunk number
+        id_chunk_dict[job_id] = chunk_number
 
         # update the current duration and chunk number
         current_duration += chunk_duration
@@ -67,21 +71,43 @@ def process_audio(video_filepath, user_id):
         # Delete the chunk file to save storage space
         os.remove(chunk_file_path)
 
+    # make sure all jobs are completed
+    while len(stt.check_jobs().get_result()["recognitions"]) != 0:
+        transcript_dict = check_jobs(stt, transcript_dict, id_chunk_dict)
+
     with open(transcript_path, "w") as outfile:
         json.dump(transcript_dict, outfile, indent=1)
 
     return transcript_dict
 
 
-def transcribe_audio(stt, user_id, chunk_number):
-    with open('../audio/{uuid}_{chunk_number}.mp3'.format(uuid=user_id,
-                                                          chunk_number=chunk_number),
-              'rb') as f:
-        response = stt.recognize(audio=f, content_type='audio/mp3',
-                                 model='en-US_BroadbandModel').get_result()
-        chunk_text = ""
+def check_jobs(stt, transcript_dict, id_chunk_dict):
+    response = stt.check_jobs().get_result()
 
-        for section in response["results"]:
-            chunk_text += section["alternatives"][0]["transcript"]
+    for job in response["recognitions"]:
+        if job["status"] == "completed":
+            id = job["id"]
+            job_result = stt.check_job(id).get_result()
 
-    return chunk_text
+            # retrieve text
+            chunk_text = ""
+            for section in job_result["results"]:
+                if len(section["results"]) > 0:
+                    chunk_text += section["results"][0]["alternatives"][0][
+                        "transcript"]
+
+            # update transcript dict
+            chunk_number = id_chunk_dict[id]
+            transcript_dict[chunk_number] = chunk_text
+
+            # delete the job
+            stt.delete_job(id)
+
+    return transcript_dict
+
+
+def delete_all_jobs():
+    stt = setup_stt()
+    response = stt.check_jobs().get_result()
+    for job in response["recognitions"]:
+        stt.delete_job(job["id"])
