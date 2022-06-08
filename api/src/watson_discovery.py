@@ -66,12 +66,3 @@ def delete_transcript(discovery, document_id):
         collection_id=discovery_collection_id,
         document_id=document_id
     )
-
-# discovery = setup_discovery()
-
-# document_id = "b483a604-3736-4406-b88c-d3add2016b07"
-# query = "alexa"
-# print(query_transcript(discovery, document_id, query))
-
-# print(
-#     check_if_transcript_exists(discovery, "5-second_overlap_transcript.json"))
