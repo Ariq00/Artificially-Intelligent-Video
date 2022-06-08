@@ -82,7 +82,8 @@ def check_jobs(stt, transcript_dict, id_chunk_dict):
     response = stt.check_jobs().get_result()
 
     for job in response["recognitions"]:
-        if job["status"] == "completed":
+        # checking id is in dict means it won't interfere with jobs from other users
+        if job["status"] == "completed" and job["id"] in id_chunk_dict:
             id = job["id"]
             job_result = stt.check_job(id).get_result()
 
