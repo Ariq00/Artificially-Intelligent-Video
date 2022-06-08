@@ -10,9 +10,6 @@ import json
 
 
 def download_video(video_url, user_id):
-    """TODO:
-        need to add error checking for invalid URL"""
-
     save_path = './static/video'
     YouTube(video_url).streams.filter(file_extension='mp4',
                                       progressive=True).first().download(

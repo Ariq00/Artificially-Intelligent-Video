@@ -94,10 +94,3 @@ def watson_assistant_query(text, document_id):
             "extracted query"]}  # return top 2 results
 
     return watson_results
-
-# document_id = "b483a604-3736-4406-b88c-d3add2016b07" # ai video
-# print(
-#     watson_assistant_query('miners',
-#                            document_id))
-
-# print(send_stateless_message("hello"))
