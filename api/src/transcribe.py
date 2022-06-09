@@ -8,6 +8,9 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import os
 import json
 
+chunk_duration = 5
+overlap = 0.5  # 0.5 second overlap between each chunk
+
 
 def download_video(video_url, user_id):
     save_path = './static/video'
@@ -26,9 +29,7 @@ def setup_stt():
 
 
 def process_audio(video_filepath, user_id):
-    chunk_number = 0
-    chunk_duration = 5
-    overlap = 0.5  # 0.5 second overlap between each chunk
+    chunk_number = 0  # set initial chunk_number
     full_audio_clip = AudioFileClip(video_filepath)
     total_duration = int(full_audio_clip.duration)
     current_duration = 0
@@ -67,6 +68,10 @@ def process_audio(video_filepath, user_id):
 
         # Delete the chunk file to save storage space
         os.remove(chunk_file_path)
+
+        # make sure number of outstanding jobs is always less than 100
+        if chunk_number % 100 == 0:
+            transcript_dict = check_jobs(stt, transcript_dict, id_chunk_dict)
 
     # make sure all jobs are completed
     while len(stt.check_jobs().get_result()["recognitions"]) != 0:

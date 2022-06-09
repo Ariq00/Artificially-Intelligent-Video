@@ -3,8 +3,8 @@ from ibm_watson.assistant_v2 import MessageInputStateless
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from environment import assistant_api_key, assistant_url, assistant_id
 import re
-
 from watson_discovery import query_transcript, setup_discovery
+from transcribe import chunk_duration
 
 
 def setup_assistant():
@@ -84,7 +84,8 @@ def watson_assistant_query(text, document_id):
     close_timestamps = []
     for result in ordered_results:
         close_timestamps.extend(
-            [result["timestamp"] - 5, result["timestamp"] + 5])
+            [result["timestamp"] - chunk_duration,
+             result["timestamp"] + chunk_duration])
         if result['timestamp'] in close_timestamps:
             ordered_results.remove(result)
 
