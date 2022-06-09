@@ -2,6 +2,7 @@ from ibm_watson import DiscoveryV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from environment import discovery_api_key, discovery_url, \
     discovery_environment_id, discovery_collection_id
+from transcribe import chunk_duration
 
 
 def setup_discovery():
@@ -41,7 +42,6 @@ def upload_transcript(discovery, transcript_filename):
 
 
 def query_transcript(discovery, document_id, user_query):
-    chunk_duration = 5  # TODO: define these variables globally
     result = discovery.query(
         environment_id=discovery_environment_id,
         collection_id=discovery_collection_id,
