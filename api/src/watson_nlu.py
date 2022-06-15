@@ -35,7 +35,7 @@ def setup_nlu():
 
 # TODO: need to decide how exactly I want to deal with each feature
 def summarize_text(user_id):
-    # summarize text isnt working with watson
+    # summarize text isn't working with watson
     nlu = setup_nlu()
     text = get_full_transcript(user_id)
 
