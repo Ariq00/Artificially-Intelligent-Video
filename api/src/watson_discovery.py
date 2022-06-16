@@ -27,7 +27,7 @@ def check_if_transcript_exists(discovery, filename):
 
 
 def upload_transcript(discovery, transcript_filename):
-    transcript_path = "../transcripts/" + transcript_filename
+    transcript_path = "./transcripts/" + transcript_filename
     if check_if_transcript_exists(discovery, transcript_filename):
         delete_transcript(discovery, check_if_transcript_exists(discovery,
                                                                 transcript_filename))

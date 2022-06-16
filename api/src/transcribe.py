@@ -35,13 +35,13 @@ def process_audio(video_filepath, user_id):
     current_duration = 0
     stt = setup_stt()
     transcript_dict = {}
-    transcript_path = "../transcripts/{uuid}.json".format(
+    transcript_path = "./transcripts/{uuid}.json".format(
         uuid=user_id)
     id_chunk_dict = {}
 
     for i in range(
             total_duration // chunk_duration + 1):  # loop for number of full clips (+1 for final shorter clip)
-        chunk_file_path = "../audio/{uuid}_{chunk_number}.mp3".format(
+        chunk_file_path = "./audio/{uuid}_{chunk_number}.mp3".format(
             uuid=user_id, chunk_number=chunk_number)
 
         if current_duration + chunk_duration + overlap > total_duration:

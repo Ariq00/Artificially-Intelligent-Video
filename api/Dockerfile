@@ -5,16 +5,14 @@ RUN apt-get -y upgrade
 RUN apt-get install -y ffmpeg
 RUN pip install --upgrade pip
 
-WORKDIR /AIVideo-app
+WORKDIR /flask_app
 
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY ./api ./api
+COPY ./src ./src
 
-WORKDIR /AIVideo-app/api/src
+WORKDIR /flask_app/src
 
-EXPOSE 5000
-
-CMD ["python", "app.py"]
+#CMD ["python", "app.py"]
