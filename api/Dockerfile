@@ -5,7 +5,7 @@ RUN apt-get -y upgrade
 RUN apt-get install -y ffmpeg
 RUN pip install --upgrade pip
 
-WORKDIR /flask_app
+WORKDIR /flaskapp
 
 COPY requirements.txt .
 
@@ -13,6 +13,6 @@ RUN pip install -r requirements.txt
 
 COPY ./src ./src
 
-WORKDIR /flask_app/src
+WORKDIR /flaskapp/src
 
 #CMD ["python", "app.py"]
