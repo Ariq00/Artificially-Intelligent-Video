@@ -22,6 +22,8 @@ def home():
     user_id = session.get("user_id")
 
     if request.method == "POST":
+        import os
+        print(os.getcwd())
         file_ext = ".mp4"  # set default file extension
 
         if request.form["video"] == "youtube":

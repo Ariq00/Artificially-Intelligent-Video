@@ -59,10 +59,11 @@ jobs:
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" .
 
-      # Push the image to IBM Container Registry
+      # Push the image to IBM Container Registry and delete previous image
       - name: Push the image to ICR
         run: |
           docker push $REGISTRY_HOSTNAME/$ICR_NAMESPACE/$IMAGE_NAME:$GITHUB_SHA
+          ibmcloud cr retention-run --images 1 aivideo
 
       # Deploy the Docker image to the IKS cluster
       - name: Deploy to IKS
