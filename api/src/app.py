@@ -16,8 +16,6 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # max upload size is 50mb
 
 @app.route("/", methods=["POST", "GET"])
 def home():
-    import os
-    print(os.getcwd())
     # generate uuid for session
     if not session.get("user_id"):
         session["user_id"] = str(uuid.uuid4())
