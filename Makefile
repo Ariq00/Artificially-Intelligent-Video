@@ -3,7 +3,7 @@ build:
 
 clean:
 	docker-compose down
-# 	docker system prune -fa
+	docker system prune -fa
 
 single:
 	cd ./api; \
