@@ -6,7 +6,7 @@
             type="text/javascript"></script>
     <script>
         $(document).ready(function () {
-            $("button").click(function () {
+            $("#youtubeButton, #uploadButton").click(function () {
                 $.LoadingOverlay("show");
             });
         });
@@ -26,7 +26,8 @@
                 </div>
 
                 <div class="col-sm-4">
-                    <button type="submit" class="btn btn-primary mb-3">Proceed
+                    <button type="submit" class="btn btn-primary mb-3"
+                            id="youtubeButton">Proceed
                         with
                         YouTube Video
                     </button>
@@ -54,7 +55,8 @@
                     </div>
 
                     <div class="col-sm-4">
-                        <button type="submit" class="btn btn-primary mb-3">
+                        <button type="submit" class="btn btn-primary mb-3"
+                                id="uploadButton">
                             Proceed
                             with Uploaded File
                         </button>
