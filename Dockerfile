@@ -7,7 +7,7 @@ RUN pip install --upgrade pip
 
 WORKDIR /flaskapp
 
-COPY requirements.txt .
+COPY ./api/requirements.txt .
 
 RUN pip install -r requirements.txt
 
