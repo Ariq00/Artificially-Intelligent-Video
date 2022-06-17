@@ -12,7 +12,9 @@ services:
   nginx:
     container_name: nginx
     restart: always
-    build: ./nginx
+    build:
+      context: ./
+      dockerfile: ./nginx/Dockerfile
     ports:
       - "80:80"
     depends_on:
