@@ -5,16 +5,16 @@ RUN apt-get -y upgrade
 RUN apt-get install -y ffmpeg
 RUN pip install --upgrade pip
 
-WORKDIR /AIVideo-app
+WORKDIR /flaskapp
 
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY ./api ./api
+COPY ./src ./src
 
-WORKDIR /AIVideo-app/api/src
+WORKDIR /flaskapp/src
 
-EXPOSE 5000
+ENV PYTHONUNBUFFERED=1
 
-CMD ["python", "app.py"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:8000", "app:app", "--timeout", "120"]

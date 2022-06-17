@@ -1,10 +1,9 @@
 from pytube import YouTube
-from moviepy.editor import AudioFileClip
-
 from environment import stt_api_key, stt_url
 from ibm_watson import SpeechToTextV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-
+from pydub import AudioSegment
+from pydub.utils import make_chunks
 import os
 import json
 
@@ -29,30 +28,20 @@ def setup_stt():
 
 
 def process_audio(video_filepath, user_id):
-    chunk_number = 0  # set initial chunk_number
-    full_audio_clip = AudioFileClip(video_filepath)
-    total_duration = int(full_audio_clip.duration)
-    current_duration = 0
+    full_audio_clip = AudioSegment.from_file(video_filepath)
     stt = setup_stt()
     transcript_dict = {}
-    transcript_path = "../transcripts/{uuid}.json".format(
+    transcript_path = "./transcripts/{uuid}.json".format(
         uuid=user_id)
     id_chunk_dict = {}
 
-    for i in range(
-            total_duration // chunk_duration + 1):  # loop for number of full clips (+1 for final shorter clip)
-        chunk_file_path = "../audio/{uuid}_{chunk_number}.mp3".format(
+    chunks = make_chunks(full_audio_clip, chunk_duration * 1000)
+
+    for chunk_number, chunk in enumerate(chunks):
+        print("exporting chunk ", chunk_number)
+        chunk_file_path = "./audio/{uuid}_{chunk_number}.mp3".format(
             uuid=user_id, chunk_number=chunk_number)
-
-        if current_duration + chunk_duration + overlap > total_duration:
-            clip = full_audio_clip.subclip(current_duration)
-
-        else:
-            # create subclip starting from the current duration
-            clip = full_audio_clip.subclip(current_duration,
-                                           current_duration + chunk_duration + overlap)
-        # save the subclip
-        clip.write_audiofile(chunk_file_path)
+        chunk.export(chunk_file_path)
 
         # create a job in stt
         with open(chunk_file_path, 'rb') as f:
@@ -61,10 +50,6 @@ def process_audio(video_filepath, user_id):
                                     ).get_result()["id"]
         # map id to a chunk number
         id_chunk_dict[job_id] = chunk_number
-
-        # update the current duration and chunk number
-        current_duration += chunk_duration
-        chunk_number += 1
 
         # Delete the chunk file to save storage space
         os.remove(chunk_file_path)
