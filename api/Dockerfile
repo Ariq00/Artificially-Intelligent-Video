@@ -14,3 +14,5 @@ RUN pip install -r requirements.txt
 COPY ./src ./src
 
 WORKDIR /flaskapp/src
+
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:8000", "app:app"]
