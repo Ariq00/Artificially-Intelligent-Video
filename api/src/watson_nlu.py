@@ -10,7 +10,6 @@ import json
 
 def get_full_transcript(transcript_filename):
     transcript_path = f"./transcripts/{transcript_filename}"
-    # transcript_path = "../transcripts/old/5-second_overlap_transcript.json"
     with open(transcript_path) as f:
         transcript_dict = json.load(f)
 
@@ -49,5 +48,3 @@ def analyse_text(transcript_filename):
     results = {"sentiment": response["sentiment"]["document"],
                "concepts": response["concepts"]}
     return results
-
-# print(analyse_text("1.json"))

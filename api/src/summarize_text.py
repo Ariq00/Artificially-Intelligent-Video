@@ -12,6 +12,3 @@ def summarize_text(transcript_filename):
                                      args=top_k_sampling_settings).text
 
     return summary.replace(" .", ".")
-
-
-print(summarize_text("1.json"))
