@@ -8,8 +8,8 @@ from watson_assistant import clean_string
 import json
 
 
-def get_full_transcript(user_id):
-    transcript_path = f"./transcripts/{user_id}.json"
+def get_full_transcript(transcript_filename):
+    transcript_path = f"./transcripts/{transcript_filename}"
     # transcript_path = "../transcripts/old/5-second_overlap_transcript.json"
     with open(transcript_path) as f:
         transcript_dict = json.load(f)
@@ -48,7 +48,4 @@ def analyse_text(user_id):
 
     results = {"sentiment": response["sentiment"]["document"],
                "concepts": response["concepts"]}
-    print(results)
     return results
-
-# analyse_text(1)
