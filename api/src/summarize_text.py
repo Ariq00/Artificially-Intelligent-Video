@@ -1,14 +1,19 @@
 from watson_nlu import get_full_transcript
-from happytransformer import HappyTextToText, TTSettings
+from environment import meaningcloud_license_key
+import requests
+import json
 
-
-# https://www.vennify.ai/summarize-text-with-transformer-models/
 
 def summarize_text(transcript_filename):
-    happy_tt = HappyTextToText("DISTILBART", "sshleifer/distilbart-cnn-12-6")
-    top_k_sampling_settings = TTSettings(do_sample=True, top_k=50,
-                                         temperature=0.7, max_length=50)
-    summary = happy_tt.generate_text(get_full_transcript(transcript_filename),
-                                     args=top_k_sampling_settings).text
+    parameters = {
+        "key": meaningcloud_license_key,
+        "txt": get_full_transcript(transcript_filename),
+        "limit": 10
+    }
+    res = requests.post("https://api.meaningcloud.com/summarization-1.0",
+                        data=parameters)
+    summary = json.loads(res.text)["summary"]
+    return summary
 
-    return summary.replace(" .", ".")
+
+print(summarize_text("1.json"))
