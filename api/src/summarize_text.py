@@ -14,6 +14,3 @@ def summarize_text(transcript_filename):
                         data=parameters)
     summary = json.loads(res.text)["summary"]
     return summary
-
-
-print(summarize_text("1.json"))
