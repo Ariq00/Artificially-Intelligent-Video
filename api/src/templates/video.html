@@ -40,8 +40,30 @@
                     <!--sentiment -->
                     <section class="pt-3">
                         <div class="container">
-                            <h2>Overall Sentiment</h2>
-                            <p> Should be some line</p>
+                            <h2>{{ sentiment }} Sentiment</h2>
+                            <div class="progress" style="height: 5%">
+                                {% if sentiment == 'Positive' %}
+                                    <div class="progress-bar bg-success"
+                                         role="progressbar"
+                                         style="width: {{ score }}%"
+                                         aria-valuenow={{ score }}
+                                                 aria-valuemin="0"
+                                         aria-valuemax="100">
+                                        {{ score }}%
+                                    </div>
+                                {% else %}
+                                    <div class="progress-bar bg-danger"
+                                         role="progressbar"
+                                         style="width: {{ score }}%"
+                                         aria-valuenow={{ score }}
+                                                 aria-valuemin="0"
+                                         aria-valuemax="100">
+                                        {{ score }}%
+                                    </div>
+                                {% endif %}
+
+
+                            </div>
 
                         </div>
                     </section>

@@ -8,6 +8,7 @@ from environment import secret_key
 from watson_assistant import watson_assistant_query
 from pytube.exceptions import PytubeError
 from summarize_text import summarize_text
+from watson_nlu import analyse_text
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -74,10 +75,17 @@ def home():
         # retrieve text analysis
         summary = summarize_text(transcript_filename)
 
+        # sentiment analysis
+        analysis_results = analyse_text(transcript_filename)
+        score = int(analysis_results["sentiment"]["score"] * 100)
+        sentiment = analysis_results["sentiment"]["label"].title()
+
         return render_template("video.html",
                                video_filepath=media_filepath,
                                video_title=media_title,
-                               summary=summary)
+                               summary=summary,
+                               sentiment=sentiment,
+                               score=score)
 
     return render_template("index.html")
 
@@ -106,7 +114,9 @@ def video_testing_page():
     return render_template("video.html",
                            video_filepath="/video/Bitcoin Video.mp4",
                            video_title="Bitcoin Video.mp4",
-                           summary="Bitcoin is njlfsbnfbljnb")
+                           summary="Bitcoin is njlfsbnfbljnb",
+                           sentiment="negative".title(),
+                           score=20)
 
 
 if __name__ == "__main__":

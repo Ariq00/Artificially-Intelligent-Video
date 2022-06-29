@@ -32,10 +32,10 @@ def setup_nlu():
     return nlu
 
 
-def analyse_text(user_id):
+def analyse_text(transcript_filename):
     # get the concepts and sentiment of the video
     nlu = setup_nlu()
-    text = get_full_transcript(user_id)
+    text = get_full_transcript(transcript_filename)
 
     response = nlu.analyze(
         text=text,
@@ -49,3 +49,6 @@ def analyse_text(user_id):
     results = {"sentiment": response["sentiment"]["document"],
                "concepts": response["concepts"]}
     return results
+
+
+print(analyse_text("1.json"))
