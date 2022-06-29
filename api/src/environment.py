@@ -18,4 +18,6 @@ discovery_collection_id = os.environ.get("DISCOVERY_COLLECTION_ID")
 nlu_api_key = os.environ.get("NLU_API_KEY")
 nlu_url = os.environ.get("NLU_URL")
 
+meaningcloud_license_key = os.environ.get("MEANINGCLOUD_LICENSE_KEY")
+
 secret_key = os.environ.get("SECRET_KEY")
