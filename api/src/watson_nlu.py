@@ -17,7 +17,7 @@ def get_full_transcript(transcript_filename):
     full_transcript = ""
     chunk = 0
     while transcript_dict.get(str(chunk)):
-        full_transcript += transcript_dict[str(chunk)] + ". "
+        full_transcript += transcript_dict[str(chunk)] + " "
         chunk += 1
 
     return full_transcript
@@ -50,5 +50,4 @@ def analyse_text(transcript_filename):
                "concepts": response["concepts"]}
     return results
 
-
-print(analyse_text("1.json"))
+# print(analyse_text("1.json"))
