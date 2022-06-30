@@ -71,13 +71,12 @@ def home():
         discovery = watson_discovery.setup_discovery()
         session["document_id"] = watson_discovery.upload_transcript(discovery,
                                                                     transcript_filename)
-
         # retrieve text analysis
         summary = summarize_text(transcript_filename)
 
         # sentiment analysis
         analysis_results = analyse_text(transcript_filename)
-        score = int(analysis_results["sentiment"]["score"] * 100)
+        score = int(abs(analysis_results["sentiment"]["score"] * 100))
         sentiment = analysis_results["sentiment"]["label"].title()
 
         # key concepts
@@ -98,7 +97,6 @@ def home():
 def watson_response():
     text = request.get_json().get("message")
     watson_results = watson_assistant_query(text, session["document_id"])
-
     timestamps = []
     for result in watson_results["top_results"]:
         timestamps.append(result["timestamp"])
@@ -107,7 +105,6 @@ def watson_response():
 
     if len(timestamps) != 0 and not watson_results["extracted query"]:
         message = "I queried the video with your exact input."
-
     return jsonify({"timestamps": timestamps, "message": message})
 
 

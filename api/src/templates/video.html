@@ -36,7 +36,7 @@
 
                     <!--sentiment -->
                     <section class="pt-3">
-                        <h2>{{ sentiment }} Sentiment</h2>
+                        <h2>Overall Sentiment is {{ sentiment }}</h2>
                         <div class="progress" style="height: 5%">
                             {% if sentiment == 'Positive' %}
                                 <div class="progress-bar bg-success"
@@ -110,7 +110,7 @@
         </div>
     </section>
 
-    <!--Something else-->
+    <!--Key concepts-->
     <section class="pt-5">
         <div class="container">
             {% if concepts is defined and concepts|length > 0 %}
@@ -122,8 +122,9 @@
                         <div class="pt-2">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">{{ result.text }}</h4>
-                                    <h5 class="card-text"></h5>
+                                    <h4 class="card-title"><a id="{{ result }}"
+                                                              href="#">{{ result }}</a>
+                                    </h4>
                                 </div>
                             </div>
                         </div>
@@ -131,6 +132,13 @@
                 {% endfor %}
             </div>
         </div>
+
+        <script>
+            $CONCEPTS = {{ concepts|tojson }};
+        </script>
+        <script type="text/javascript"
+                src="{{ url_for('static', filename='concepts.js') }}"></script>
+
     </section>
 
 

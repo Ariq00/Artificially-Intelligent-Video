@@ -53,7 +53,7 @@ def process_intent(response, intent):
 
 
 def clean_string(string):
-    return re.sub('\W+', ' ', string)
+    return re.sub('\W+', ' ', str(string))
 
 
 def watson_assistant_query(text, document_id):

@@ -46,5 +46,7 @@ def analyse_text(transcript_filename):
     ).get_result()
 
     results = {"sentiment": response["sentiment"]["document"],
-               "concepts": response["concepts"]}
+               "concepts": [concept["text"] for concept in response["concepts"]
+                            if
+                            concept["relevance"] > 0.8]}
     return results
