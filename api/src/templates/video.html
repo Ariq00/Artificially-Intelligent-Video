@@ -30,40 +30,33 @@
 
                     <!--Video summary -->
                     <section class="pt-3">
-                        <div class="container">
-                            <h2>Video Summary</h2>
-                            <p> {{ summary }}</p>
-
-                        </div>
+                        <h2>Video Summary</h2>
+                        <p> {{ summary }}</p>
                     </section>
 
                     <!--sentiment -->
                     <section class="pt-3">
-                        <div class="container">
-                            <h2>{{ sentiment }} Sentiment</h2>
-                            <div class="progress" style="height: 5%">
-                                {% if sentiment == 'Positive' %}
-                                    <div class="progress-bar bg-success"
-                                         role="progressbar"
-                                         style="width: {{ score }}%"
-                                         aria-valuenow={{ score }}
-                                                 aria-valuemin="0"
-                                         aria-valuemax="100">
-                                        {{ score }}%
-                                    </div>
-                                {% else %}
-                                    <div class="progress-bar bg-danger"
-                                         role="progressbar"
-                                         style="width: {{ score }}%"
-                                         aria-valuenow={{ score }}
-                                                 aria-valuemin="0"
-                                         aria-valuemax="100">
-                                        {{ score }}%
-                                    </div>
-                                {% endif %}
-
-
-                            </div>
+                        <h2>{{ sentiment }} Sentiment</h2>
+                        <div class="progress" style="height: 5%">
+                            {% if sentiment == 'Positive' %}
+                                <div class="progress-bar bg-success"
+                                     role="progressbar"
+                                     style="width: {{ score }}%"
+                                     aria-valuenow={{ score }}
+                                             aria-valuemin="0"
+                                     aria-valuemax="100">
+                                    {{ score }}%
+                                </div>
+                            {% else %}
+                                <div class="progress-bar bg-danger"
+                                     role="progressbar"
+                                     style="width: {{ score }}%"
+                                     aria-valuenow={{ score }}
+                                             aria-valuemin="0"
+                                     aria-valuemax="100">
+                                    {{ score }}%
+                                </div>
+                            {% endif %}
 
                         </div>
                     </section>
@@ -120,10 +113,18 @@
     <!--Something else-->
     <section class="pt-5">
         <div class="container">
-            <h1>Key Concepts</h1>
-            <p> card with key concepts and timestamps</p>
-
+            {% for result in results %}
+                <div class="mt-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ result.concept }}</h3>
+                            <h5 class="card-text">{{ result.timestamp }}</h5>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </section>
+
 
 {% endblock %}
