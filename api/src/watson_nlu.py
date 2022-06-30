@@ -3,8 +3,6 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson.natural_language_understanding_v1 import Features, \
     SentimentOptions, ConceptsOptions
 from environment import nlu_api_key, nlu_url
-from watson_assistant import watson_assistant_query
-
 import json
 
 
@@ -48,5 +46,6 @@ def analyse_text(transcript_filename):
     results = {"sentiment": response["sentiment"]["document"],
                "concepts": [concept["text"] for concept in response["concepts"]
                             if
-                            concept["relevance"] > 0.8]}
+                            concept[
+                                "relevance"] > 0.5]}  # relevance threshold set to 0.5
     return results
