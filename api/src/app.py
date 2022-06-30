@@ -8,7 +8,7 @@ from environment import secret_key
 from watson_assistant import watson_assistant_query
 from pytube.exceptions import PytubeError
 from summarize_text import summarize_text
-from watson_nlu import analyse_text, get_concept_timestamps
+from watson_nlu import analyse_text
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -81,8 +81,7 @@ def home():
         sentiment = analysis_results["sentiment"]["label"].title()
 
         # key concepts
-        results = get_concept_timestamps(session["document_id"],
-                                         analysis_results)
+        concepts = analysis_results["concepts"]
 
         return render_template("video.html",
                                video_filepath=media_filepath,
@@ -90,7 +89,7 @@ def home():
                                summary=summary,
                                sentiment=sentiment,
                                score=score,
-                               results=results)
+                               concepts=concepts)
 
     return render_template("index.html")
 
@@ -117,16 +116,13 @@ def watson_response():
 def video_testing_page():
     session["document_id"] = "66097691-d0f9-41db-b030-24fac3b0d813"
 
-    results = get_concept_timestamps("66097691-d0f9-41db-b030-24fac3b0d813",
-                                     analyse_text("1.json"))
-
     return render_template("video.html",
                            video_filepath="/video/Bitcoin Video.mp4",
                            video_title="Bitcoin Video.mp4",
                            summary="Bitcoin is njlfsbnfbljnb",
                            sentiment="negative".title(),
                            score=20,
-                           results=results)
+                           concepts=analyse_text("1.json")["concepts"])
 
 
 if __name__ == "__main__":

@@ -113,16 +113,23 @@
     <!--Something else-->
     <section class="pt-5">
         <div class="container">
-            {% for result in results %}
-                <div class="mt-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h3 class="card-title">{{ result.concept }}</h3>
-                            <h5 class="card-text">{{ result.timestamp }}</h5>
+            {% if concepts is defined and concepts|length > 0 %}
+                <h2>Key Concepts</h2>
+            {% endif %}
+            <div class="row">
+                {% for result in concepts %}
+                    <div class="col-sm-4">
+                        <div class="pt-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ result.text }}</h4>
+                                    <h5 class="card-text"></h5>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </section>
 

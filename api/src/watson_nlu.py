@@ -48,18 +48,3 @@ def analyse_text(transcript_filename):
     results = {"sentiment": response["sentiment"]["document"],
                "concepts": response["concepts"]}
     return results
-
-
-def get_concept_timestamps(document_id, results):
-    concept_timestamps = []
-    # run query for each concept and get timestamp
-    for concept in results["concepts"]:
-        query_results = watson_assistant_query(concept["text"], document_id)
-        # only keep concepts for which a timestamp is found
-        if len(query_results["top_results"]) > 0 and concept[
-            "relevance"] > 0.8:
-            concept_timestamps.append({"concept": concept["text"],
-                                       "timestamp": query_results[
-                                           "top_results"][0]["timestamp"]})
-
-    return sorted(concept_timestamps, key=lambda d: d['timestamp'])
