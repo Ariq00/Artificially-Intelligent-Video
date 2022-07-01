@@ -8,7 +8,7 @@ def summarize_text(transcript_filename):
     parameters = {
         "key": meaningcloud_license_key,
         "txt": get_full_transcript(transcript_filename),
-        "limit": 10
+        "limit": 20
     }
     res = requests.post("https://api.meaningcloud.com/summarization-1.0",
                         data=parameters)

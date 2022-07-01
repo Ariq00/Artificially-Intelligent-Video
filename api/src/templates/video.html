@@ -116,20 +116,7 @@
             {% if concepts is defined and concepts|length > 0 %}
                 <h2>Key Concepts</h2>
             {% endif %}
-            <div class="row">
-                {% for result in concepts %}
-                    <div class="col-sm-4">
-                        <div class="pt-2">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title"><a id="{{ result }}"
-                                                              href="#">{{ result }}</a>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+            <div class="row" id="key_concepts_section">
             </div>
         </div>
 
@@ -138,7 +125,6 @@
         </script>
         <script type="text/javascript"
                 src="{{ url_for('static', filename='concepts.js') }}"></script>
-
     </section>
 
 

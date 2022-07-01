@@ -11,7 +11,6 @@ function add_concept_timestamps() {
         })
             .then(r => r.json())
             .then(r => {
-                console.log(r)
                 make_concept_clickable(concept, r.timestamps[0])
             })
             .catch((error) => {
@@ -22,16 +21,30 @@ function add_concept_timestamps() {
 
 function make_concept_clickable(id, timestamp) {
     const video = document.getElementById("videoDemo_html5_api"); // have to use this ID for some reason
+    const section = document.getElementById("key_concepts_section")
+
     if (timestamp !== undefined) {
+
+        // add to the inner html
+        let concept_card =
+            '<div class="col-sm-4">' +
+            '<div class="pt-2">' +
+            '<div class="card">' +
+            '<div class="card-body">' +
+            '<h4 class="card-title"><a id="' + id +
+            '" href="#">' + id + '</a>' +
+            '</h4>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
+
+        section.insertAdjacentHTML("beforeend", concept_card);
+
         document.getElementById(id).addEventListener("click", function (event) {
             video.currentTime = timestamp;
             video.play();
         }, false);
-    } else { // this is just to remove the hyperlink for concepts without timestamp
-        const hyperlink = document.getElementById(id);
-        const link_removed = document.createElement('p');
-        link_removed.innerHTML = hyperlink.innerHTML
-        hyperlink.parentNode.replaceChild(link_removed, hyperlink)
     }
 }
 
