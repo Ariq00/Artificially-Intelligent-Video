@@ -116,7 +116,8 @@ def video_testing_page():
     return render_template("video.html",
                            video_filepath="/video/Bitcoin Video.mp4",
                            video_title="Bitcoin Video.mp4",
-                           summary="Bitcoin is njlfsbnfbljnb",
+                           summary=summarize_text(
+                               "2440f95c-97d7-40be-a646-8a86fc9e428b.json"),
                            sentiment="negative".title(),
                            score=20,
                            concepts=analyse_text("1.json")["concepts"])

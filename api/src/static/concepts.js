@@ -1,5 +1,6 @@
-function add_concept_timestamps() {
+async function add_concept_timestamps() {
     for (let i in $CONCEPTS) {
+        await sleep(200);
         let concept = $CONCEPTS[i]
         fetch($SCRIPT_ROOT + '/watson_response', {
             method: 'POST',
@@ -46,6 +47,10 @@ function make_concept_clickable(id, timestamp) {
             video.play();
         }, false);
     }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 window.onload = function () { // have to set 5 second timeout or no timestamps are returned
