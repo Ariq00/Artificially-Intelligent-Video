@@ -64,7 +64,8 @@ def home():
         # transcribe audio
         media_filepath = "/video/" + user_id + file_ext
         static_media_filepath = "./static" + media_filepath
-        process_audio(static_media_filepath, user_id)
+        process_audio(static_media_filepath, user_id,
+                      request.form['languageSubmit'])
 
         # upload to discovery
         transcript_filename = f"{user_id}.json"

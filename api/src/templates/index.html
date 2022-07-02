@@ -17,6 +17,7 @@
         <div class="container">
             <form class="row" id="YouTubeForm" method="POST">
                 <input type="hidden" name="video" value="youtube">
+                <input type="hidden" name="languageSubmit" value="us">
                 <div class="col-sm-6">
                     <label for="youtubeUrl" class="visually-hidden">YouTube
                         URL</label>
@@ -41,6 +42,7 @@
         <div class="container">
             <form method="POST" action="" enctype="multipart/form-data">
                 <input type="hidden" name="video" value="file">
+                <input type="hidden" name="languageSubmit" value="us">
                 <div class="row">
                     <div class="col-sm-6">
                         <label for="file" class="form-label">Alternatively
@@ -52,6 +54,9 @@
                     <div class="col-sm-6">
                         <input class="form-control" type="file" name="file"
                                id="file">
+                        <small class="form-text text-muted">
+                            Max file size is 50MB.
+                        </small>
                     </div>
 
                     <div class="col-sm-4">
@@ -67,6 +72,52 @@
         </div>
 
     </section>
+
+    <!--language select form-->
+    <section class="pt-3">
+        <div class="container">
+            <form method="POST" action="" enctype="multipart/form-data"
+                  id="languageForm">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="form-label">Select the video
+                            language</label>
+                    </div>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio"
+                           name="language" id="usEnglish"
+                           value="us"
+                           checked>
+                    <label class="form-check-label" for="usEnglish">
+                        US English
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio"
+                           name="language" id="ukEnglish"
+                           value="uk"
+                    >
+                    <label class="form-check-label" for="ukEnglish">
+                        UK English
+                    </label>
+                </div>
+            </form>
+        </div>
+
+        <!--JQuery script to set the language for the forms-->
+        <script>
+            $(document).ready(function () {
+                $('#languageForm input[type=radio]').click(function () {
+                    $("input[name='languageSubmit']").val($('input[name=language]:checked').val());
+                });
+            });
+        </script>
+
+    </section>
+
+
 
     <!--Instructions for how it works-->
     <section class="pt-5">

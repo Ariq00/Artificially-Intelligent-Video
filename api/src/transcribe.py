@@ -27,13 +27,16 @@ def setup_stt():
     return stt
 
 
-def process_audio(video_filepath, user_id):
+def process_audio(video_filepath, user_id, country):
     full_audio_clip = AudioSegment.from_file(video_filepath)
     stt = setup_stt()
     transcript_dict = {}
     transcript_path = "./transcripts/{uuid}.json".format(
         uuid=user_id)
     id_chunk_dict = {}
+
+    language_model_dict = {'us': 'en-US_BroadbandModel',
+                           'uk': 'en-GB_BroadbandModel'}
 
     chunks = make_chunks(full_audio_clip, chunk_duration * 1000)
 
@@ -46,7 +49,7 @@ def process_audio(video_filepath, user_id):
         # create a job in stt
         with open(chunk_file_path, 'rb') as f:
             job_id = stt.create_job(audio=f, content_type='audio/mp3',
-                                    model='en-US_BroadbandModel'
+                                    model=language_model_dict[country]
                                     ).get_result()["id"]
         # map id to a chunk number
         id_chunk_dict[job_id] = chunk_number
