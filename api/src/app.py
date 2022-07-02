@@ -121,7 +121,7 @@ def video_testing_page():
                                "bitcoin.json"),
                            sentiment="negative".title(),
                            score=20,
-                           concepts=analyse_text("1.json")["concepts"])
+                           concepts=analyse_text("bitcoin.json")["concepts"])
 
 
 if __name__ == "__main__":
