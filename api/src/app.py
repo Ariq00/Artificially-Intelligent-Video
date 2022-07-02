@@ -3,17 +3,23 @@ from flask import Flask, session, render_template, request, jsonify, flash, \
 import uuid
 from transcribe import download_video, process_audio
 import watson_discovery
+import mongoengine
 from werkzeug.utils import secure_filename
-from environment import secret_key
+from environment import secret_key, mongo_host
 from watson_assistant import watson_assistant_query
 from pytube.exceptions import PytubeError
 from summarize_text import summarize_text
 from watson_nlu import analyse_text
+from auth.routes import auth_bp
+
+mongoengine.connect(host=mongo_host)
 
 app = Flask(__name__)
 app.secret_key = secret_key
 app.config["UPLOAD_FOLDER"] = "./static/video/"
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # max upload size is 50mb
+# register blueprints
+app.register_blueprint(auth_bp)
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -72,7 +78,7 @@ def home():
         discovery = watson_discovery.setup_discovery()
         session["document_id"] = watson_discovery.upload_transcript(discovery,
                                                                     transcript_filename)
-        # retrieve text analysis
+        # retrieve text summary
         summary = summarize_text(transcript_filename)
 
         # sentiment analysis

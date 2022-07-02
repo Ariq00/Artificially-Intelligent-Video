@@ -21,3 +21,5 @@ nlu_url = os.environ.get("NLU_URL")
 meaningcloud_license_key = os.environ.get("MEANINGCLOUD_LICENSE_KEY")
 
 secret_key = os.environ.get("SECRET_KEY")
+
+mongo_host = os.environ.get("MONGO_HOST")
