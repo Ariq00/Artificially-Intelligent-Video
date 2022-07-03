@@ -28,37 +28,31 @@
                     </video>
                     <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
 
+                    <!--Save button -->
+                    {% if current_user.is_authenticated %}
+                        <section class="pt-3">
+                            <div class="container">
+                                <form class="row" id="YouTubeForm"
+                                      method="POST">
+                                    <input type="hidden" name="video"
+                                           value="youtube">
+                                    <input type="hidden" name="languageSubmit"
+                                           value="us">
+
+                                    <button type="submit"
+                                            class="btn btn-outline-success mb-2"
+                                            id="youtubeButton">Save Video
+                                    </button>
+                                </form>
+                            </div>
+                        </section>
+                    {% endif %}
+
+
                     <!--Video summary -->
                     <section class="pt-3">
                         <h2>Video Summary</h2>
                         <p> {{ summary }}</p>
-                    </section>
-
-                    <!--sentiment -->
-                    <section class="pt-3">
-                        <h2>Overall Sentiment is {{ sentiment }}</h2>
-                        <div class="progress" style="height: 5%">
-                            {% if sentiment == 'Positive' %}
-                                <div class="progress-bar bg-success"
-                                     role="progressbar"
-                                     style="width: {{ score }}%"
-                                     aria-valuenow={{ score }}
-                                             aria-valuemin="0"
-                                     aria-valuemax="100">
-                                    {{ score }}%
-                                </div>
-                            {% else %}
-                                <div class="progress-bar bg-danger"
-                                     role="progressbar"
-                                     style="width: {{ score }}%"
-                                     aria-valuenow={{ score }}
-                                             aria-valuemin="0"
-                                     aria-valuemax="100">
-                                    {{ score }}%
-                                </div>
-                            {% endif %}
-
-                        </div>
                     </section>
 
                 </div>
@@ -106,6 +100,39 @@
                             src="{{ url_for('static', filename='chatbot.js') }}"></script>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <section class="pt-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <!--sentiment -->
+                    <h2>Overall Sentiment is {{ sentiment }}</h2>
+                    <div class="progress" style="height: 50%">
+                        {% if sentiment == 'Positive' %}
+                            <div class="progress-bar bg-success"
+                                 role="progressbar"
+                                 style="width: {{ score }}%"
+                                 aria-valuenow={{ score }}
+                                         aria-valuemin="0"
+                                 aria-valuemax="100">
+                                {{ score }}%
+                            </div>
+                        {% else %}
+                            <div class="progress-bar bg-danger"
+                                 role="progressbar"
+                                 style="width: {{ score }}%"
+                                 aria-valuenow={{ score }}
+                                         aria-valuemin="0"
+                                 aria-valuemax="100">
+                                {{ score }}%
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
             </div>
         </div>
     </section>

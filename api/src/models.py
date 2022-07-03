@@ -1,5 +1,4 @@
 from mongoengine import (
-    BooleanField,
     Document,
     EmailField,
     EmbeddedDocument,
@@ -13,6 +12,7 @@ from flask_login import UserMixin
 
 class Videos(EmbeddedDocument):
     video_filename = StringField(required=True)
+    document_id = StringField(required=True)
     title = StringField(required=True)
     summary = IntField(required=True)
     sentiment = StringField(choices=["positive", "negative", "neutral"])

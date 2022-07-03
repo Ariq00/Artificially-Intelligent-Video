@@ -109,6 +109,7 @@ def watson_response():
 @main_bp.route('/video_test', methods=['GET'])
 def video_testing_page():
     session["document_id"] = "66097691-d0f9-41db-b030-24fac3b0d813"
+    # concepts = analyse_text("bitcoin.json")["concepts"]
 
     return render_template("video.html",
                            video_filepath="/video/Bitcoin Video.mp4",
@@ -117,4 +118,4 @@ def video_testing_page():
                                "bitcoin.json"),
                            sentiment="negative".title(),
                            score=20,
-                           concepts=analyse_text("bitcoin.json")["concepts"])
+                           concepts="x")

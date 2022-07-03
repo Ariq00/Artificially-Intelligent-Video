@@ -33,7 +33,6 @@ class Chatbox {
         // passing in an empty object for results variable
         this.updateChatText(chatbox, {})
         textField.value = ''
-        // this.toggleTypingIndicator(chatbox)
         fetch($SCRIPT_ROOT + '/watson_response', {
             method: 'POST',
             body: JSON.stringify({message: text1}),
@@ -47,7 +46,6 @@ class Chatbox {
             .then(r => {
                     this.messages.push({name: "SmartVideo", message: r.message});
                     this.updateChatText(chatbox, r)
-                    textField.value = ''
                 }
             )
             .catch((error) => {

@@ -19,7 +19,7 @@
                     <a href="{{ url_for('main.video_testing_page') }}"
                        class="nav-link">Video Testing Page</a>
                 </li>
-                {% if not current_user.is_anonymous %}
+                {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a href="{{ url_for('auth.my_account') }}"
                            class="nav-link">My Account</a>
