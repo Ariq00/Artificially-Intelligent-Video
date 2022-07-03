@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from models import User
 from auth.routes import auth_bp
 from main.routes import main_bp
+from user.routes import user_bp
 
 mongoengine.connect(host=mongo_host)
 
@@ -15,6 +16,7 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # max upload size is 50mb
 # register blueprints
 app.register_blueprint(auth_bp)
 app.register_blueprint(main_bp)
+app.register_blueprint(user_bp)
 
 # login manager setup
 login_manager = LoginManager()

@@ -35,7 +35,7 @@ class Chatbox {
         textField.value = ''
         fetch($SCRIPT_ROOT + '/watson_response', {
             method: 'POST',
-            body: JSON.stringify({message: text1}),
+            body: JSON.stringify({message: text1, document_id: $DOCUMENT_ID}),
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'

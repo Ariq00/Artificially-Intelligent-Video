@@ -8,6 +8,7 @@ from watson_assistant import watson_assistant_query
 from pytube.exceptions import PytubeError
 from summarize_text import summarize_text
 from watson_nlu import analyse_text
+from main.utilities import check_if_video_saved
 
 main_bp = Blueprint('main', __name__)
 
@@ -66,8 +67,8 @@ def home():
         # upload to discovery
         transcript_filename = f"{user_id}.json"
         discovery = watson_discovery.setup_discovery()
-        session["document_id"] = watson_discovery.upload_transcript(discovery,
-                                                                    transcript_filename)
+        document_id = watson_discovery.upload_transcript(discovery,
+                                                         transcript_filename)
         # retrieve text summary
         summary = summarize_text(transcript_filename)
 
@@ -79,13 +80,17 @@ def home():
         # key concepts
         concepts = analysis_results["concepts"]
 
+        video_is_saved = check_if_video_saved(document_id)
+
         return render_template("video.html",
                                video_filepath=media_filepath,
+                               document_id=document_id,
                                video_title=media_title,
                                summary=summary,
                                sentiment=sentiment,
                                score=score,
-                               concepts=concepts)
+                               concepts=concepts,
+                               video_is_saved=video_is_saved)
 
     return render_template("index.html")
 
@@ -93,7 +98,8 @@ def home():
 @main_bp.route("/watson_response", methods=["POST"])
 def watson_response():
     text = request.get_json().get("message")
-    watson_results = watson_assistant_query(text, session["document_id"])
+    document_id = request.get_json().get("document_id")
+    watson_results = watson_assistant_query(text, document_id)
     timestamps = []
     for result in watson_results["top_results"]:
         timestamps.append(result["timestamp"])
@@ -108,14 +114,17 @@ def watson_response():
 # THIS ROUTE IS FOR TESTING
 @main_bp.route('/video_test', methods=['GET'])
 def video_testing_page():
-    session["document_id"] = "66097691-d0f9-41db-b030-24fac3b0d813"
+    document_id = "66097691-d0f9-41db-b030-24fac3b0d813"
+    video_is_saved = check_if_video_saved(document_id)
     # concepts = analyse_text("bitcoin.json")["concepts"]
+    # summary = summarize_text("bitcoin.json")
 
     return render_template("video.html",
                            video_filepath="/video/Bitcoin Video.mp4",
+                           document_id=document_id,
                            video_title="Bitcoin Video.mp4",
-                           summary=summarize_text(
-                               "bitcoin.json"),
+                           summary="This is a summary",
                            sentiment="negative".title(),
                            score=20,
-                           concepts="x")
+                           concepts=["nakamoto", "bitcoin"],
+                           video_is_saved=video_is_saved)

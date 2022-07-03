@@ -5,11 +5,46 @@
           href="{{ url_for('static', filename='chatbot_style.css') }}">
     <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet"/>
 
+    <script>
+        $SCRIPT_ROOT = {{ request.script_root|tojson }};
+        $VIDEO_FILEPATH = {{ video_filepath|tojson }};
+        $DOCUMENT_ID = {{ document_id|tojson }};
+        $VIDEO_TITLE = {{ video_title|tojson }};
+        $SUMMARY = {{ summary|tojson }};
+        $SENTIMENT = {{ sentiment|tojson }};
+        $SCORE = {{ score|tojson }};
+        $CONCEPTS = {{ concepts|tojson }};
+    </script>
+
     <section class="pt-5">
         <div class="container">
 
             <div class="row">
-                <h1>{{ video_title }}</h1>
+                <div class="col-sm-8">
+                    <h1>{{ video_title }}</h1>
+                </div>
+
+                <div class="col-sm-4">
+                    <!--Save button -->
+                    <section class="pt-3">
+                        {% if video_is_saved %}
+                            <button type="button"
+                                    class="btn btn-outline-success mb-3 float-end disabled"
+                                    id="saveVideo">Video saved!
+                            </button>
+
+                        {% elif current_user.is_authenticated %}
+                            <button type="button"
+                                    class="btn btn-outline-success mb-3 float-end"
+                                    id="saveVideo">Save Video
+                            </button>
+
+                            <script type="text/javascript"
+                                    src="{{ url_for('static', filename='save_video.js') }}"></script>
+                        {% endif %}
+                    </section>
+                </div>
+
             </div>
             <div class="row">
                 <!--Video Player-->
@@ -27,27 +62,6 @@
                                 type="video/mp4"/>
                     </video>
                     <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
-
-                    <!--Save button -->
-                    {% if current_user.is_authenticated %}
-                        <section class="pt-3">
-                            <div class="container">
-                                <form class="row" id="YouTubeForm"
-                                      method="POST">
-                                    <input type="hidden" name="video"
-                                           value="youtube">
-                                    <input type="hidden" name="languageSubmit"
-                                           value="us">
-
-                                    <button type="submit"
-                                            class="btn btn-outline-success mb-2"
-                                            id="youtubeButton">Save Video
-                                    </button>
-                                </form>
-                            </div>
-                        </section>
-                    {% endif %}
-
 
                     <!--Video summary -->
                     <section class="pt-3">
@@ -93,9 +107,6 @@
                         </div>
                     </div>
 
-                    <script>
-                        $SCRIPT_ROOT = {{ request.script_root|tojson }};
-                    </script>
                     <script type="text/javascript"
                             src="{{ url_for('static', filename='chatbot.js') }}"></script>
                 </div>
@@ -147,9 +158,6 @@
             </div>
         </div>
 
-        <script>
-            $CONCEPTS = {{ concepts|tojson }};
-        </script>
         <script type="text/javascript"
                 src="{{ url_for('static', filename='concepts.js') }}"></script>
     </section>

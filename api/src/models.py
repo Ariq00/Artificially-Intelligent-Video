@@ -1,23 +1,24 @@
 from mongoengine import (
     Document,
     EmailField,
-    EmbeddedDocument,
-    EmbeddedDocumentListField,
     IntField,
     ListField,
     StringField,
+    ReferenceField
 )
 from flask_login import UserMixin
 
 
-class Videos(EmbeddedDocument):
-    video_filename = StringField(required=True)
-    document_id = StringField(required=True)
+class Video(Document):
+    user = ReferenceField("User", required=True)
+    filepath = StringField(required=True)
+    document_id = StringField(required=True, unique=True)
     title = StringField(required=True)
-    summary = IntField(required=True)
-    sentiment = StringField(choices=["positive", "negative", "neutral"])
+    summary = StringField(required=True)
+    sentiment = StringField(choices=["Positive", "Negative", "Neutral"])
     score = IntField(required=True)
     concepts = ListField()
+    meta = {"collection": "videos"}
 
 
 class User(Document, UserMixin):
@@ -25,5 +26,4 @@ class User(Document, UserMixin):
     password = StringField(required=True)
     first_name = StringField(required=True)
     last_name = StringField(required=True)
-    saved_videos = EmbeddedDocumentListField(Videos, default=[])
     meta = {"collection": "users"}

@@ -4,7 +4,10 @@ async function add_concept_timestamps() {
         let concept = $CONCEPTS[i]
         fetch($SCRIPT_ROOT + '/watson_response', {
             method: 'POST',
-            body: JSON.stringify({message: $CONCEPTS[i]}),
+            body: JSON.stringify({
+                message: $CONCEPTS[i],
+                document_id: $DOCUMENT_ID
+            }),
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'
