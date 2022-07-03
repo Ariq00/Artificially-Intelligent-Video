@@ -20,6 +20,11 @@
                 </li>
                 {% if not current_user.is_anonymous %}
                     <li class="nav-item">
+                        <a href="{{ url_for('auth_bp.my_account') }}"
+                           class="nav-link">My Account</a>
+                    </li>
+
+                    <li class="nav-item">
                         <a href="{{ url_for('auth_bp.logout') }}"
                            class="nav-link">Logout</a>
                     </li>

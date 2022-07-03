@@ -46,3 +46,9 @@ def logout():
     logout_user()
     flash(f"You have been logged out", 'info')
     return redirect(url_for('home'))
+
+
+@auth_bp.route('/my_account')
+@login_required
+def my_account():
+    return render_template("my_account.html")

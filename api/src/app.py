@@ -27,7 +27,7 @@ app.register_blueprint(auth_bp)
 # login setup
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "auth.login"
+login_manager.login_view = "auth_bp.login"
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -145,6 +145,13 @@ def load_user(user_id):
     if user_id is not None:
         return User.objects(id=user_id).first()
     return None
+
+
+@login_manager.unauthorized_handler
+def unauthorised():
+    """Redirect unauthorised users to Login page."""
+    flash('You must be logged in to view this page.', 'warning')
+    return redirect(url_for('auth_bp.login'))
 
 
 if __name__ == "__main__":

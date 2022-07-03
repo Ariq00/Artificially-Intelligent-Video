@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+    ID: {{ current_user.id }}
+    <br>
+    Email: {{ current_user.email }}
+    <br>
+    First name: {{ current_user.first_name }}
+    <br>
+    Last name: {{ current_user.last_name }}
+
+{% endblock %}
