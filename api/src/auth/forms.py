@@ -8,11 +8,11 @@ from werkzeug.security import check_password_hash
 
 
 class RegistrationForm(FlaskForm):
-    first_name = StringField(label='First name',
+    first_name = StringField(label='First Name',
                              validators=[DataRequired()])
-    last_name = StringField(label='Last name',
+    last_name = StringField(label='Last Name',
                             validators=[DataRequired()])
-    email = EmailField(label='Email address',
+    email = EmailField(label='Email Address',
                        validators=[DataRequired(),
                                    Email(message="Invalid Email")])
     password = PasswordField(label='Password', validators=[DataRequired()])
@@ -33,7 +33,7 @@ class RegistrationForm(FlaskForm):
 class LoginForm(FlaskForm):
     email = EmailField(label='Email address', validators=[DataRequired()])
     password = PasswordField(label='Password', validators=[DataRequired()])
-    remember = BooleanField('Keep me signed in')
+    remember = BooleanField('Remember Me')
     submit = SubmitField('Log in')
 
     def validate_email(self, email):

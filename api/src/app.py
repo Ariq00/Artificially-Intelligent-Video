@@ -16,7 +16,7 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # max upload size is 50mb
 app.register_blueprint(auth_bp)
 app.register_blueprint(main_bp)
 
-# login setup
+# login manager setup
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"
@@ -24,8 +24,6 @@ login_manager.login_view = "auth.login"
 
 @login_manager.user_loader
 def load_user(user_id):
-    """ Takes a user ID and returns a user object or None if the user does
-    not exist """
     if user_id is not None:
         return User.objects(id=user_id).first()
     return None
@@ -33,7 +31,6 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorised():
-    """Redirect unauthorised users to Login page."""
     flash('You must be logged in to view this page.', 'warning')
     return redirect(url_for('auth.login'))
 
