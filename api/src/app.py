@@ -11,6 +11,8 @@ from pytube.exceptions import PytubeError
 from summarize_text import summarize_text
 from watson_nlu import analyse_text
 from auth.routes import auth_bp
+from flask_login import LoginManager
+from models import User
 
 mongoengine.connect(host=mongo_host)
 
@@ -18,8 +20,14 @@ app = Flask(__name__)
 app.secret_key = secret_key
 app.config["UPLOAD_FOLDER"] = "./static/video/"
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # max upload size is 50mb
+
 # register blueprints
 app.register_blueprint(auth_bp)
+
+# login setup
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "auth.login"
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -128,6 +136,15 @@ def video_testing_page():
                            sentiment="negative".title(),
                            score=20,
                            concepts=analyse_text("bitcoin.json")["concepts"])
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """ Takes a user ID and returns a user object or None if the user does
+    not exist """
+    if user_id is not None:
+        return User.objects(id=user_id).first()
+    return None
 
 
 if __name__ == "__main__":

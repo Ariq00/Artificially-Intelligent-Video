@@ -8,6 +8,7 @@ from mongoengine import (
     ListField,
     StringField,
 )
+from flask_login import UserMixin
 
 
 class Videos(EmbeddedDocument):
@@ -19,7 +20,7 @@ class Videos(EmbeddedDocument):
     concepts = ListField()
 
 
-class User(Document):
+class User(Document, UserMixin):
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
     first_name = StringField(required=True)

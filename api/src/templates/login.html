@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <form method="POST" action="{{ url_for('auth_bp.login') }}">
+        {{ form.csrf_token }}
+        <h1 class="text-center p-3"
+            style="background-color: rgba(0, 0, 0, 0.075);"><b>Log In</b></h1>
+        <div class="form-group">
+            {{ form.email.label }}
+            {% if form.email.errors %}
+                {{ form.email(class="form-control is-invalid", placeholder="Enter email") }}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.email(class="form-control", placeholder="Enter email") }}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.password.label }}
+            {{ form.password(class="form-control", placeholder="Password") }}
+        </div>
+
+        <div class="form-check">
+            {{ form.remember(class="form-check-input") }}
+            {{ form.remember.label(class="form-check-label") }}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+        {#    <small class="text-muted ml-2">#}
+        {#        <a href="#">Forgot Password?</a>#}
+        {#    </small>#}
+
+    </form>
+
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Need to sign up? <a class="ml-2"
+                                href="{{ url_for("auth_bp.register") }}"> Sign
+            up here</a>
+        </small>
+    </div>
+
+{% endblock %}
