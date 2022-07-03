@@ -39,13 +39,15 @@ class LoginForm(FlaskForm):
     def validate_email(self, email):
         users = User.objects(email=email.data)
         if not users:
-            flash(f"Please chck the email entered and try again.", 'danger')
+            flash(f"Please check the email entered and try again.", 'danger')
             raise ValidationError(
                 'No email associated with that account!')
 
     def validate_password(self, password):
         user = User.objects(email=self.email.data).first()
-        if not check_password_hash(user.password, password.data):
-            flash(f"Please double check your password and try again", 'danger')
-            raise ValidationError(
-                'Incorrect password. Please double-check and try again.')
+        if user:
+            if not check_password_hash(user.password, password.data):
+                flash(f"Please double check your password and try again",
+                      'danger')
+                raise ValidationError(
+                    'Incorrect password. Please double-check and try again.')

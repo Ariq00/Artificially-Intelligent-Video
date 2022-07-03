@@ -5,7 +5,7 @@ from models import User
 from datetime import timedelta
 from flask_login import login_user, logout_user, login_required, current_user
 
-auth_bp = Blueprint('auth_bp', __name__)
+auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route("/register", methods=["POST", "GET"])
@@ -22,7 +22,7 @@ def register():
         user.save()
         flash(f"Thank you for signing up {form.first_name.data}!", 'success')
         login_user(user)
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
 
     return render_template('register.html', title='Register', form=form)
 
@@ -36,7 +36,7 @@ def login():
                    duration=timedelta(minutes=60))
         flash(f"Welcome {current_user.first_name}. You are now logged in!",
               'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     return render_template('login.html', title='Login', form=form)
 
 
@@ -45,7 +45,7 @@ def login():
 def logout():
     logout_user()
     flash(f"You have been logged out", 'info')
-    return redirect(url_for('home'))
+    return redirect(url_for('main.home'))
 
 
 @auth_bp.route('/my_account')

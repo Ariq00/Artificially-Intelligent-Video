@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-    <form method="POST" action="{{ url_for('auth_bp.register') }}">
+    <form method="POST" action="{{ url_for('auth.register') }}">
         {{ form.csrf_token }}
         <h1 class="text-center p-3"
             style="background-color: rgba(0, 0, 0, 0.075);"><b>Register</b>
@@ -84,7 +84,7 @@
     <div class="border-top pt-3">
         <small class="text-muted">
             Already have an Account? <a class="ml-2"
-                                        href="{{ url_for("auth_bp.login") }}">
+                                        href="{{ url_for("auth.login") }}">
             Log in here</a>
         </small>
     </div>
