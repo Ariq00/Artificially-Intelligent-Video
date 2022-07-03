@@ -10,5 +10,4 @@ user_bp = Blueprint('user', __name__)
 def save_video():
     video_dict = request.get_json()
     Video(**video_dict, user=current_user).save()
-
     return video_dict

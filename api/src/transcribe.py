@@ -11,13 +11,13 @@ chunk_duration = 5
 overlap = 0.5  # 0.5 second overlap between each chunk
 
 
-def download_video(video_url, user_id):
+def download_video(video_url, filename):
     save_path = './static/video'
     YouTube(video_url).streams.filter(file_extension='mp4',
                                       progressive=True).first().download(
         output_path=save_path,
-        filename='{user_id}.mp4'.format(user_id=user_id))
-    return YouTube(video_url).title
+        filename=filename)
+    return YouTube(video_url).title, f"{save_path}/{filename}"
 
 
 def setup_stt():
