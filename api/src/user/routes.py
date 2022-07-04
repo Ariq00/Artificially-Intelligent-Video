@@ -42,7 +42,7 @@ def search_saved_videos():
             video_dict = video.to_dict()
             video_dict["timestamps"] = video_result["timestamps"]
 
-            video_dict["formatted_timestamp"] = [
+            video_dict["formatted_timestamps"] = [
                 datetime.fromtimestamp(timestamp).strftime("%-M:%S")
                 for timestamp in video_result["timestamps"]]
 
