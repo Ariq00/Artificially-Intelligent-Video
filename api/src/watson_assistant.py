@@ -94,4 +94,12 @@ def watson_assistant_query(text, document_id):
                           "text response"], "extracted query": query_dict[
             "extracted query"]}  # return top 2 results
 
-    return watson_results
+    timestamps = []
+    for result in watson_results["top_results"]:
+        timestamps.append(result["timestamp"])
+
+    message = watson_results["text_response"]
+
+    if len(timestamps) != 0 and not watson_results["extracted query"]:
+        message = "I queried the video with your exact input."
+    return {"timestamps": timestamps, "message": message}

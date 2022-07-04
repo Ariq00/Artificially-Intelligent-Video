@@ -52,10 +52,10 @@ def home():
         video_is_saved = check_if_video_saved(document_id)
 
         return render_template("video.html",
-                               video_filepath=static_media_filepath.replace(
+                               filepath=static_media_filepath.replace(
                                    "./static", ""),
                                document_id=document_id,
-                               video_title=media_title,
+                               title=media_title,
                                summary=summary,
                                sentiment=sentiment,
                                score=score,
@@ -69,16 +69,7 @@ def home():
 def watson_response():
     text = request.get_json().get("message")
     document_id = request.get_json().get("document_id")
-    watson_results = watson_assistant_query(text, document_id)
-    timestamps = []
-    for result in watson_results["top_results"]:
-        timestamps.append(result["timestamp"])
-
-    message = watson_results["text_response"]
-
-    if len(timestamps) != 0 and not watson_results["extracted query"]:
-        message = "I queried the video with your exact input."
-    return jsonify({"timestamps": timestamps, "message": message})
+    return jsonify(watson_assistant_query(text, document_id))
 
 
 # THIS ROUTE IS FOR TESTING
@@ -89,9 +80,9 @@ def video_testing_page():
     # summary = summarize_text("bitcoin.json")
 
     return render_template("video.html",
-                           video_filepath="/video/Bitcoin Video.mp4",
+                           filepath="/video/Bitcoin Video.mp4",
                            document_id=document_id,
-                           video_title="Bitcoin Video.mp4",
+                           title="Bitcoin Video.mp4",
                            summary="This is a summary",
                            sentiment="negative".title(),
                            score=20,

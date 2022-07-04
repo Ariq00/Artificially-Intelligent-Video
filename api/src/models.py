@@ -22,9 +22,10 @@ class Video(Document):
 
     def to_dict(self):
         return {
-            "video_filepath": self.filepath,
+            "id": str(self.id),
+            "filepath": self.filepath,
             "document_id": self.document_id,
-            "video_title": self.title,
+            "title": self.title,
             "summary": self.summary,
             "sentiment": self.sentiment,
             "score": self.score,

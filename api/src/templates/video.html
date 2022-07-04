@@ -4,12 +4,13 @@
     <link rel="stylesheet"
           href="{{ url_for('static', filename='chatbot_style.css') }}">
     <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet"/>
+    <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
 
     <script>
         $SCRIPT_ROOT = {{ request.script_root|tojson }};
-        $VIDEO_FILEPATH = {{ video_filepath|tojson }};
+        $VIDEO_FILEPATH = {{ filepath|tojson }};
         $DOCUMENT_ID = {{ document_id|tojson }};
-        $VIDEO_TITLE = {{ video_title|tojson }};
+        $VIDEO_TITLE = {{ title|tojson }};
         $SUMMARY = {{ summary|tojson }};
         $SENTIMENT = {{ sentiment|tojson }};
         $SCORE = {{ score|tojson }};
@@ -21,7 +22,7 @@
 
             <div class="row">
                 <div class="col-sm-8">
-                    <h1>{{ video_title }}</h1>
+                    <h1>{{ title }}</h1>
                 </div>
 
                 <div class="col-sm-4">
@@ -58,10 +59,9 @@
                             height="100%"
                             data-setup="{}"
                     >
-                        <source src="{{ url_for('static', filename=video_filepath) }}"
+                        <source src="{{ url_for('static', filename=filepath) }}"
                                 type="video/mp4"/>
                     </video>
-                    <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
 
                     <!--Video summary -->
                     <section class="pt-3">

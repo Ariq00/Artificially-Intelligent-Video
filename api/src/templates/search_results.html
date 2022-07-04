@@ -1,0 +1,92 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+    <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet"/>
+    <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
+
+    <div class="row">
+        <h2 class="border-bottom mb-4 pt-4">Search Results</h2>
+    </div>
+
+    <script>
+        function clickable_timestamp(video_id, timestamp) {
+            const full_video_id = video_id + '_html5_api';
+            document.querySelectorAll('video').forEach(vid => vid.pause());
+            const video = document.getElementById(full_video_id);
+            video.currentTime = timestamp;
+            video.play()
+        }
+    </script>
+
+    <!--Search Bar-->
+    <section class="pt-3">
+        <form class="row" method="GET"
+              action="{{ url_for('user.search_saved_videos') }}">
+            <div class="col-sm-6">
+                <label for="searchQuery"
+                       class="visually-hidden">Search</label>
+                <input type="text" class="form-control"
+                       id="searchQuery" name="searchQuery"
+                       placeholder="Search all saved videos"
+                       value="{{ search_query }}">
+            </div>
+
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary mb-3"
+                        id="searchButton">Search
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <div class="row">
+        {% for video in results %}
+
+            <!--form for sending video ID-->
+            <form method="GET" action="{{ url_for('user.saved_videos') }}"
+                  id="{{ video.id }}" hidden>
+                <input type="hidden" name="videoID" value="{{ video.id }}">
+            </form>
+
+            <div class="card m-3 p-0" style="width: 39rem;">
+                <video
+                        id="{{ video.id }}"
+                        src="{{ url_for('static', filename=video.filepath) }}"
+                        width="100%"
+                        class="video-js vjs-default-skin vjs-16-9"
+                        controls data-setup="{}"
+                        preload="metadata"
+                >
+                    <source src="{{ url_for('static', filename=video.filepath) }}"
+                            type="video/mp4"/>
+                </video>
+
+                <div class="card-body">
+                    <a href="#"
+                       onclick="document.getElementById('{{ video.id }}').submit()">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                    </a>
+                    <p class="card-text">{{ search_query }} is discussed at
+                        <a href="#" onclick="
+                                clickable_timestamp('{{ video.id }}', '{{ video.timestamps[0] }}')
+                                ">
+                            {{ video.formatted_timestamp[0] }}
+                        </a>
+
+                        {% if video.timestamps|length > 1 %}
+                            and
+                            <a href="#" onclick="
+                                    clickable_timestamp('{{ video.id }}', '{{ video.timestamps[1] }}')
+                                    ">
+                                {{ video.formatted_timestamp[1] }}
+                            </a>
+
+                        {% endif %}
+                    </p>
+                    <p class="card-text">{{ video.summary }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
