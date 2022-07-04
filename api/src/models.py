@@ -20,6 +20,17 @@ class Video(Document):
     concepts = ListField()
     meta = {"collection": "videos"}
 
+    def to_dict(self):
+        return {
+            "video_filepath": self.filepath,
+            "document_id": self.document_id,
+            "video_title": self.title,
+            "summary": self.summary,
+            "sentiment": self.sentiment,
+            "score": self.score,
+            "concepts": self.concepts
+        }
+
 
 class User(Document, UserMixin):
     email = EmailField(required=True, unique=True)

@@ -85,7 +85,6 @@ def watson_response():
 @main_bp.route('/video_test', methods=['GET'])
 def video_testing_page():
     document_id = "66097691-d0f9-41db-b030-24fac3b0d813"
-    video_is_saved = check_if_video_saved(document_id)
     # concepts = analyse_text("bitcoin.json")["concepts"]
     # summary = summarize_text("bitcoin.json")
 
@@ -97,4 +96,4 @@ def video_testing_page():
                            sentiment="negative".title(),
                            score=20,
                            concepts=["nakamoto", "bitcoin"],
-                           video_is_saved=video_is_saved)
+                           video_is_saved=True)
