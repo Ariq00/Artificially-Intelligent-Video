@@ -38,7 +38,7 @@
                    onclick="document.getElementById('{{ video.id }}').submit()">
                     {% if "mp3" in video.title %}
                         <!-- https://www.flaticon.com/free-icon/mp3_337944 -->
-                        <img src="{{ url_for('static', filename="images/mp3.png") }}"
+                        <img src="{{ url_for('static', filename="images/mp3_icon.png") }}"
                              alt="" height="160">
                     {% else %}
                         <video src="{{ url_for('static', filename=video.filepath) }}"
