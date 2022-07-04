@@ -21,6 +21,11 @@
                 </li>
                 {% if current_user.is_authenticated %}
                     <li class="nav-item">
+                        <a href="{{ url_for('user.saved_videos') }}"
+                           class="nav-link">Saved Videos</a>
+                    </li>
+
+                    <li class="nav-item">
                         <a href="{{ url_for('auth.my_account') }}"
                            class="nav-link">My Account</a>
                     </li>

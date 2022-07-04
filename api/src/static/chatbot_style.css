@@ -61,7 +61,7 @@ body {
 .messages__item {
     background: orange;
     max-width: 60.6%;
-    width: fit-content;
+    width: -moz-fit-content;
 }
 
 .messages__item--operator {

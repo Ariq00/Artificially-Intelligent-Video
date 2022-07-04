@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="row">
+        <h2 class="border-bottom mb-4 pt-3">Saved Videos</h2>
+    </div>
+
+    <!--Search Bar-->
+    <section class="pt-3">
+        <form class="row" id="search" method="GET">
+            <div class="col-sm-6">
+                <label for="searchQuery"
+                       class="visually-hidden">Search</label>
+                <input type="url" class="form-control"
+                       id="searchQuery" name="searchQuery"
+                       placeholder="Search all saved videos">
+            </div>
+
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary mb-3"
+                        id="searchButton">Search
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <div class="row">
+        {% for video in videos %}
+
+            <!--form for sending video ID-->
+            <form method="GET" action="{{ url_for('user.saved_videos') }}"
+                  id="{{ video.id }}" hidden>
+                <input type="hidden" name="videoID" value="{{ video.id }}">
+            </form>
+
+            <div class="card m-3 p-0" style="width: 18rem;">
+                <a href="#"
+                   onclick="document.getElementById('{{ video.id }}').submit()">
+                    <video src="{{ url_for('static', filename=video.filepath) }}"
+                           width="100%"></video>
+                </a>
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ video.title }}</h5>
+                    <p class="card-text">{{ video.summary }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
