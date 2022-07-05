@@ -1,25 +1,31 @@
 {% extends 'layout.html' %}
 {% block content %}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='multiselect_card.css') }}">
+
     <div class="row">
         <h2 class="border-bottom mb-4 pt-4">Saved Videos</h2>
     </div>
 
     <!--Search Bar-->
     <section class="pt-3">
-        <form class="row" method="GET"
+        <form class="form-inline" method="GET"
               action="{{ url_for('user.search_saved_videos') }}">
-            <div class="col-sm-6">
-                <label for="searchQuery"
-                       class="visually-hidden">Search</label>
-                <input type="text" class="form-control"
-                       id="searchQuery" name="searchQuery"
-                       placeholder="Search all saved videos">
-            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="searchQuery"
+                           class="visually-hidden">Search</label>
+                    <input type="text" class="form-control"
+                           id="searchQuery" name="searchQuery"
+                           placeholder="Search all saved videos">
+                </div>
 
-            <div class="col-sm-2">
-                <button type="submit" class="btn btn-primary mb-3"
-                        id="searchButton">Search
-                </button>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary mb-3"
+                            id="searchButton">Search
+                    </button>
+                </div>
+
             </div>
         </form>
     </section>
@@ -33,7 +39,8 @@
                 <input type="hidden" name="videoID" value="{{ video.id }}">
             </form>
 
-            <div class="card m-3 p-0" style="width: 18rem;">
+            <div class="card m-3 p-0" style="width: 18.55rem;"
+                 id="{{ video.id }}_active">
                 <a href="#"
                    onclick="document.getElementById('{{ video.id }}').submit()">
                     {% if "mp3" in video.title %}
@@ -50,9 +57,54 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ video.title }}</h5>
                     <p class="card-text">{{ video.summary }}</p>
+                    <input type="checkbox"/>
                 </div>
             </div>
         {% endfor %}
     </div>
+
+    <form method="POST" action="{{ url_for('user.delete_saved_videos') }}">
+        <input type="text" name="video_ids_json" value="" hidden
+               id="videosToBeDeleted">
+
+        <div class="col-sm-4 pt-5 mt-5">
+            <button class="btn btn-danger mb-3"
+                    id="deleteButton"
+                    hidden
+                    type="submit"
+                    onclick='
+                            var $active_cards = []
+                            $(".activeCard").each(function(){
+                            const id = $(this).attr("id");
+                            $active_cards.push(id);
+                            })
+
+                            var active_cards_as_json = JSON.stringify($active_cards);
+                            document.getElementById("videosToBeDeleted").value = active_cards_as_json;
+                            console.log($active_cards)
+                            '
+            >Delete selected videos
+            </button>
+        </div>
+    </form>
+
+
+    <script>
+        $(document).ready(function () {
+            // Card Multi Select
+            $('input[type=checkbox]').click(function () {
+                if ($(this).parent().parent().hasClass('activeCard')) {
+                    $(this).parent().parent().removeClass('activeCard');
+                } else {
+                    $(this).parent().parent().addClass('activeCard');
+                }
+                if ($(".activeCard").length) {
+                    $("#deleteButton").removeAttr('hidden');
+                } else {
+                    $("#deleteButton").attr('hidden', true);
+                }
+            });
+        });
+    </script>
 
 {% endblock %}

@@ -32,7 +32,7 @@ function make_concept_clickable(id, timestamp) {
         // add to the inner html
         let concept_card =
             '<div class="col-sm-4">' +
-            '<div class="pt-2">' +
+            '<div class="pt-4">' +
             '<div class="card">' +
             '<div class="card-body">' +
             '<h4 class="card-title"><a id="' + id +

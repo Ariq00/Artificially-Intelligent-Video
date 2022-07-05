@@ -1,8 +1,10 @@
-from flask import render_template, request, Blueprint, jsonify
+from flask import render_template, request, Blueprint, flash, redirect, url_for
 from models import Video
 from flask_login import current_user, login_required
 from watson_assistant import watson_assistant_query
-from datetime import timedelta, datetime
+from datetime import datetime
+import json
+import os
 
 user_bp = Blueprint('user', __name__)
 
@@ -50,3 +52,18 @@ def search_saved_videos():
 
     return render_template("search_results.html", results=results,
                            search_query=search_query)
+
+
+@user_bp.route("/delete_saved_videos", methods=["POST"])
+@login_required
+def delete_saved_videos():
+    video_ids = json.loads(request.form["video_ids_json"])
+    for id_active in video_ids:
+        video = Video.objects(id=id_active.replace("_active", "")).first()
+        try:
+            os.remove(f"./static{video.filepath}")
+        except FileNotFoundError:
+            print("Could not delete video file. File does not exist")
+        video.delete()
+    flash("Videos successfully deleted", "info")
+    return redirect(url_for("user.saved_videos"))

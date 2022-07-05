@@ -49,8 +49,6 @@ def home():
         # key concepts
         concepts = analysis_results["concepts"]
 
-        video_is_saved = check_if_video_saved(document_id)
-
         return render_template("video.html",
                                filepath=static_media_filepath.replace(
                                    "./static", ""),
@@ -60,7 +58,7 @@ def home():
                                sentiment=sentiment,
                                score=score,
                                concepts=concepts,
-                               video_is_saved=video_is_saved)
+                               video_is_saved=False)
 
     return render_template("index.html")
 
