@@ -7,6 +7,7 @@ from watson_assistant import watson_assistant_query
 from summarize_text import summarize_text
 from watson_nlu import analyse_text
 from main.utilities import check_if_video_saved, process_upload
+import os
 
 main_bp = Blueprint('main', __name__)
 
@@ -49,6 +50,9 @@ def home():
         # key concepts
         concepts = analysis_results["concepts"]
 
+        # delete transcript
+        os.remove(f"./transcripts/{transcript_filename}")
+        
         return render_template("video.html",
                                filepath=static_media_filepath.replace(
                                    "./static", ""),
