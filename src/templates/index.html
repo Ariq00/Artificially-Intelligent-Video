@@ -12,9 +12,26 @@
             });
         });
     </script>
-    
-    <!--YouTube URL Box-->
+
+    <!--Instructions for how it works-->
     <section class="pt-5">
+        <div class="container">
+            <h2>Get Started By Uploading a Video</h2>
+            <p class="lead my-3">
+                1. Paste the URL for your YouTube video or upload an MP3 / MP4
+                file.
+                <br>
+                2. Enter your query in the chat box.
+                <br>
+                3. The chatbot will return the timestamp of the part of the
+                video
+                which best answers your query.
+            </p>
+        </div>
+    </section>
+
+    <!--YouTube URL Box-->
+    <section class="pt-4">
         <div class="container">
             <form class="row" id="YouTubeForm" method="POST">
                 <input type="hidden" name="video" value="youtube">
@@ -117,28 +134,6 @@
         </script>
 
     </section>
-
-
-
-    <!--Instructions for how it works-->
-    <section class="pt-5">
-        <div class="container">
-            <h2>How it Works</h2>
-            <p class="lead my-3">
-                1. Paste the URL for your YouTube video or upload an MP3 / MP4
-                file.
-                <br>
-                2. Enter your query in the chat box.
-                <br>
-                3. The chatbot will return the timestamp of the part of the
-                video
-                which best answers your query.
-            </p>
-        </div>
-    </section>
-
-
-
 
     {% if current_user.is_anonymous %}
         <section class="pt-5">
