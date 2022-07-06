@@ -79,7 +79,6 @@ def delete_saved_videos():
 @login_required
 def upload_multiple_videos():
     user_id = session.get("user_id")
-    # TODO: limit to max 10
 
     if request.form["video"] == "youtube":
         # format urls
@@ -90,13 +89,17 @@ def upload_multiple_videos():
 
     video_status_dict = {}
 
-    for video in video_list:
+    for index, video in enumerate(video_list, 1):
         request_array = [request.form["video"], video]
         upload_result = process_upload(request_array, user_id)
 
         if upload_result["status"] == "failed":
-            video_status_dict[upload_result["media_title"]] = upload_result[
-                "message"]
+            if upload_result.get("media_title"):
+                video_status_dict[upload_result["media_title"]] = \
+                    upload_result["message"]
+            else:
+                video_status_dict[f"Video {index}"] = upload_result["message"]
+
             continue
 
         media_title, static_media_filepath = \

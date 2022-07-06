@@ -55,7 +55,7 @@
                         <input class="form-control" type="file" name="file"
                                id="file">
                         <small class="form-text text-muted">
-                            Max file size is 50MB.
+                            Max file size is 500MB.
                         </small>
                     </div>
 
@@ -163,7 +163,9 @@
                     <div class="col-sm-6">
                         <label for="youtubeUrls" class="visually-hidden">YouTube
                             URLs</label>
+                        <!-- youtube url is 43 characters. so max length of 430 + 42 means only 10 links allowed -->
                         <textarea class="form-control"
+                                  required maxlength="472"
                                   id="youtubeUrls" name="youtubeUrls" rows="3"
                                   placeholder="Enter a YouTube URL on each line (maximum 10 links)"></textarea>
                     </div>
@@ -196,10 +198,11 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <input class="form-control" type="file" multiple
+                                   required
                                    name="multipleFile"
                                    id="multipleFile">
                             <small class="form-text text-muted">
-                                Max file size is 50MB each (maximum 10 files).
+                                Maximum combined file size is 500MB.
                             </small>
                         </div>
 
@@ -222,16 +225,17 @@
             $('#multipleYouTubeForm').submit(function (e) {
 
                 e.preventDefault(); // prevent from submitting form directly
+                var multiple_youtube_form = $("#multipleYouTubeForm")
+                var data = multiple_youtube_form.serializeArray()
+
+                alert("Job successfully added. You will get a notification when processing is complete.");
+                multiple_youtube_form[0].reset(); // reset the form
 
                 $.ajax({
                     url: {{ request.script_root|tojson }} +'/upload_multiple_videos',
                     type: 'POST',
-                    data: $("#multipleYouTubeForm").serializeArray() // convert all form data to array (key:value)
+                    data: data // convert all form data to array (key:value)
                 })
-                    .done(function (response) {
-                        alert(response); // show the response
-                        $("#multipleYouTubeForm")[0].reset(); // reset the form
-                    })
                     .fail(function (error) {
                         console.log(error); // show the error.
                     });
@@ -251,6 +255,9 @@
                 data.append('video', 'file')
                 data.append('languageSubmit', 'us')
 
+                alert("Job successfully added. You will get a notification when processing is complete.");
+                $("#multipleFileForm")[0].reset(); // reset the form
+
                 $.ajax({
                     url: {{ request.script_root|tojson }} +'/upload_multiple_videos',
                     type: 'POST',
@@ -259,10 +266,6 @@
                     processData: false,  // tell jQuery not to process the data
                     contentType: false   // tell jQuery not to set contentType
                 })
-                    .done(function () {
-                        alert("Job successfully added. You will get a notification when processing is complete.");
-                        $("#multipleFileForm")[0].reset(); // reset the form
-                    })
                     .fail(function (error) {
                         console.log(error); // show the error.
                     });

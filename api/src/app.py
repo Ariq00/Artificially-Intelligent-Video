@@ -11,7 +11,8 @@ mongoengine.connect(host=mongo_host)
 
 app = Flask(__name__)
 app.secret_key = secret_key
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # max upload size is 50mb
+app.config[
+    'MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # max payload size is 500mb
 
 # register blueprints
 app.register_blueprint(auth_bp)
