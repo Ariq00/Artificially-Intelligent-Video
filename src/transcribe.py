@@ -6,6 +6,7 @@ from pydub import AudioSegment
 from pydub.utils import make_chunks
 import os
 import json
+from werkzeug.exceptions import RequestEntityTooLarge
 
 chunk_duration = 5
 overlap = 0.5  # 0.5 second overlap between each chunk
@@ -13,11 +14,17 @@ overlap = 0.5  # 0.5 second overlap between each chunk
 
 def download_video(video_url, filename):
     save_path = './static/video'
-    YouTube(video_url).streams.filter(file_extension='mp4',
-                                      progressive=True).first().download(
-        output_path=save_path,
-        filename=filename)
-    return YouTube(video_url).title, f"{save_path}/{filename}"
+    yt_video = YouTube(video_url).streams.filter(file_extension='mp4',
+                                                 progressive=True).first()
+    filesize = yt_video.filesize / 1024 / 1024
+    if filesize > 500:
+        raise RequestEntityTooLarge
+
+    else:
+        yt_video.download(
+            output_path=save_path,
+            filename=filename)
+        return YouTube(video_url).title, f"{save_path}/{filename}"
 
 
 def setup_stt():

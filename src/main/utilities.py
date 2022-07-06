@@ -1,5 +1,4 @@
 from flask_login import current_user
-from models import Video
 from pytube.exceptions import PytubeError
 from werkzeug.utils import secure_filename
 from summarize_text import summarize_text
@@ -9,6 +8,7 @@ from watson_nlu import analyse_text
 import os
 from flask_mail import Message
 from setup_app import mail
+from werkzeug.exceptions import RequestEntityTooLarge
 
 
 def process_upload(request_array, user_id):
@@ -51,6 +51,9 @@ def process_upload(request_array, user_id):
                                                                 f"{user_id}_{current_time}.mp4")
         except PytubeError as e:
             return {"status": "failed", "message": str(e)}
+        except RequestEntityTooLarge:
+            return {"status": "failed",
+                    "message": "Video file is greater than 500MB!"}
 
     return {"status": "success", "media_title": media_title,
             "static_media_filepath": static_media_filepath}
