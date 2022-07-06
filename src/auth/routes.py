@@ -4,6 +4,7 @@ from auth.forms import RegistrationForm, LoginForm
 from models import User
 from datetime import timedelta
 from flask_login import login_user, logout_user, login_required, current_user
+from setup_app import login_manager
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -52,3 +53,16 @@ def logout():
 @login_required
 def my_account():
     return render_template("my_account.html")
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id is not None:
+        return User.objects(id=user_id).first()
+    return None
+
+
+@login_manager.unauthorized_handler
+def unauthorised():
+    flash('You must be logged in to view this page.', 'warning')
+    return redirect(url_for('auth.login'))

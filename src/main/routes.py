@@ -7,6 +7,7 @@ from watson_assistant import watson_assistant_query
 from main.utilities import process_upload, \
     summarise_and_analyse
 from ibm_cloud_sdk_core.api_exception import ApiException
+from main.utilities import send_email
 
 main_bp = Blueprint('main', __name__)
 
@@ -80,7 +81,6 @@ def video_testing_page():
     # concepts = analyse_text("bitcoin.json")["concepts"]
     # summary = summarize_text("bitcoin.json")
 
-    from app import send_email
     print(send_email())
 
     return render_template("video.html",
