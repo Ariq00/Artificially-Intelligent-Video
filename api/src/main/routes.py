@@ -4,10 +4,9 @@ import uuid
 from transcribe import process_audio
 import watson_discovery
 from watson_assistant import watson_assistant_query
-from summarize_text import summarize_text
-from watson_nlu import analyse_text
-from main.utilities import check_if_video_saved, process_upload
-import os
+from main.utilities import process_upload, \
+    summarise_and_analyse
+from ibm_cloud_sdk_core.api_exception import ApiException
 
 main_bp = Blueprint('main', __name__)
 
@@ -21,7 +20,12 @@ def home():
 
     if request.method == "POST":
         # upload file
-        upload_result = process_upload(request, user_id)
+        if request.form["video"] == "file":
+            request_array = [request.form["video"], request.files["file"]]
+        else:
+            request_array = [request.form["video"], request.form["youtubeUrl"]]
+
+        upload_result = process_upload(request_array, user_id)
         if upload_result["status"] == "failed":
             flash(upload_result["message"], "danger")
             return redirect(url_for("main.home"))
@@ -29,40 +33,35 @@ def home():
             media_title, static_media_filepath = upload_result["media_title"], \
                                                  upload_result[
                                                      "static_media_filepath"]
-
         # transcribe audio
         process_audio(static_media_filepath, user_id,
                       request.form['languageSubmit'])
 
         # upload to discovery
-        transcript_filename = f"{user_id}.json"
         discovery = watson_discovery.setup_discovery()
+        transcript_filename = f"{user_id}.json"
         document_id = watson_discovery.upload_transcript(discovery,
                                                          transcript_filename)
-        # retrieve text summary
-        summary = summarize_text(transcript_filename)
 
-        # sentiment analysis
-        analysis_results = analyse_text(transcript_filename)
-        score = int(abs(analysis_results["sentiment"]["score"] * 100))
-        sentiment = analysis_results["sentiment"]["label"].title()
+        try:
+            summary, score, sentiment, concepts = summarise_and_analyse(
+                transcript_filename)
 
-        # key concepts
-        concepts = analysis_results["concepts"]
+            return render_template("video.html",
+                                   filepath=static_media_filepath.replace(
+                                       "./static", ""),
+                                   document_id=document_id,
+                                   title=media_title,
+                                   summary=summary,
+                                   sentiment=sentiment,
+                                   score=score,
+                                   concepts=concepts,
+                                   video_is_saved=False)
 
-        # delete transcript
-        os.remove(f"./transcripts/{transcript_filename}")
-        
-        return render_template("video.html",
-                               filepath=static_media_filepath.replace(
-                                   "./static", ""),
-                               document_id=document_id,
-                               title=media_title,
-                               summary=summary,
-                               sentiment=sentiment,
-                               score=score,
-                               concepts=concepts,
-                               video_is_saved=False)
+        except ApiException:
+            flash("Could not analyse video. Video has no audio content!",
+                  "danger")
+            return redirect(url_for("main.home"))
 
     return render_template("index.html")
 

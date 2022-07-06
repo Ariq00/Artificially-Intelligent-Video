@@ -27,7 +27,7 @@ def setup_stt():
     return stt
 
 
-def process_audio(video_filepath, user_id, country):
+def process_audio(video_filepath, user_id, country='us'):
     full_audio_clip = AudioSegment.from_file(video_filepath)
     stt = setup_stt()
     transcript_dict = {}

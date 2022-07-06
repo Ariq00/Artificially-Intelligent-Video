@@ -12,5 +12,9 @@ def summarize_text(transcript_filename):
     }
     res = requests.post("https://api.meaningcloud.com/summarization-1.0",
                         data=parameters)
-    summary = json.loads(res.text)["summary"]
+    try:
+        summary = json.loads(res.text)["summary"]
+    except KeyError:
+        summary = "Could not generate summary for video."
+
     return summary

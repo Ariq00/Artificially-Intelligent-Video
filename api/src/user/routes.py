@@ -1,10 +1,16 @@
-from flask import render_template, request, Blueprint, flash, redirect, url_for
+from flask import render_template, request, Blueprint, flash, redirect, \
+    url_for, jsonify, session
 from models import Video
 from flask_login import current_user, login_required
 from watson_assistant import watson_assistant_query
 from datetime import datetime
 import json
 import os
+from main.utilities import process_upload, \
+    summarise_and_analyse
+from transcribe import process_audio
+from ibm_cloud_sdk_core.api_exception import ApiException
+import watson_discovery
 
 user_bp = Blueprint('user', __name__)
 
@@ -67,3 +73,68 @@ def delete_saved_videos():
         video.delete()
     flash("Videos successfully deleted", "info")
     return redirect(url_for("user.saved_videos"))
+
+
+@user_bp.route("/upload_multiple_videos", methods=["POST"])
+@login_required
+def upload_multiple_videos():
+    user_id = session.get("user_id")
+    # TODO: limit to max 10
+
+    if request.form["video"] == "youtube":
+        # format urls
+        video_list = [url.replace("\r", "").strip() for url in
+                      request.form['youtubeUrls'].split("\n")]
+    else:
+        video_list = request.files.getlist("multipleFile[]")
+
+    video_status_dict = {}
+
+    for video in video_list:
+        request_array = [request.form["video"], video]
+        upload_result = process_upload(request_array, user_id)
+
+        if upload_result["status"] == "failed":
+            video_status_dict[upload_result["media_title"]] = upload_result[
+                "message"]
+            continue
+
+        media_title, static_media_filepath = \
+            upload_result["media_title"], upload_result[
+                "static_media_filepath"]
+
+        # transcribe audio
+        process_audio(static_media_filepath, user_id,
+                      request.form['languageSubmit'])
+
+        # upload to discovery
+        discovery = watson_discovery.setup_discovery()
+        transcript_filename = f"{user_id}.json"
+        document_id = watson_discovery.upload_transcript(discovery,
+                                                         transcript_filename)
+
+        try:
+            summary, score, sentiment, concepts = summarise_and_analyse(
+                transcript_filename)
+
+            Video(
+                filepath=static_media_filepath.replace(
+                    "./static", ""),
+                document_id=document_id,
+                title=media_title,
+                summary=summary,
+                sentiment=sentiment,
+                score=score,
+                concepts=concepts,
+                user=current_user
+            ).save()
+
+            video_status_dict[media_title] = "Success"
+
+        except ApiException:
+            video_status_dict[
+                media_title] = "Could not analyse video. Video has no audio content!"
+            continue
+
+    print(video_status_dict)
+    return video_status_dict

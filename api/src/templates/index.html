@@ -133,9 +133,143 @@
                 video
                 which best answers your query.
             </p>
-
         </div>
-
     </section>
+
+    {% if current_user.is_authenticated %}
+        <section class="pt-5">
+            <div class="container">
+                <h1>Need to Upload Multiple Files?</h1>
+                <p class="lead my-3">
+                    1. Enter all your YouTube URLs below, separated by a new
+                    line.
+                    Alternatively upload multiple files below.
+                    <br>
+                    2. Get an email notification when processing of all the
+                    videos has been completed.
+                    <br>
+                    3. Query your videos from the Saved Videos section!
+                </p>
+            </div>
+        </section>
+
+        <!--YouTube URL Box-->
+        <section class="pt-5">
+            <div class="container">
+                <form class="row" id="multipleYouTubeForm" method="POST"
+                      action="{{ url_for('user.upload_multiple_videos') }}">
+                    <input type="hidden" name="video" value="youtube">
+                    <input type="hidden" name="languageSubmit" value="us">
+                    <div class="col-sm-6">
+                        <label for="youtubeUrls" class="visually-hidden">YouTube
+                            URLs</label>
+                        <textarea class="form-control"
+                                  id="youtubeUrls" name="youtubeUrls" rows="3"
+                                  placeholder="Enter a YouTube URL on each line (maximum 10 links)"></textarea>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <button type="submit" class="btn btn-primary mb-3"
+                                id="multipleYoutubeButton">Proceed
+                            with
+                            YouTube Videos
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!--Upload form-->
+        <section class="pt-3">
+            <div class="container">
+                <form method="POST"
+                      action="{{ url_for('user.upload_multiple_videos') }}"
+                      enctype="multipart/form-data"
+                      id="multipleFileForm">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="multipleFile" class="form-label">Alternatively
+                                upload multiple MP3/MP4 files</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input class="form-control" type="file" multiple
+                                   name="multipleFile"
+                                   id="multipleFile">
+                            <small class="form-text text-muted">
+                                Max file size is 50MB each (maximum 10 files).
+                            </small>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-primary mb-3"
+                                    id="multipleUploadButton">
+                                Proceed
+                                with Uploaded Files
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+        </section>
+
+
+        <script>
+            $('#multipleYouTubeForm').submit(function (e) {
+
+                e.preventDefault(); // prevent from submitting form directly
+
+                $.ajax({
+                    url: {{ request.script_root|tojson }} +'/upload_multiple_videos',
+                    type: 'POST',
+                    data: $("#multipleYouTubeForm").serializeArray() // convert all form data to array (key:value)
+                })
+                    .done(function (response) {
+                        alert(response); // show the response
+                        $("#multipleYouTubeForm")[0].reset(); // reset the form
+                    })
+                    .fail(function (error) {
+                        console.log(error); // show the error.
+                    });
+            })
+
+            $('#multipleFileForm').submit(function (e) {
+
+                e.preventDefault(); // prevent from submitting form directly
+
+                var data = new FormData();
+                var videoFiles = document.getElementById("multipleFile")
+
+                for (var i = 0; i < videoFiles.files.length; i++) {
+                    data.append('multipleFile[]', videoFiles.files[i], videoFiles.files[i].name);
+                }
+
+                data.append('video', 'file')
+                data.append('languageSubmit', 'us')
+
+                $.ajax({
+                    url: {{ request.script_root|tojson }} +'/upload_multiple_videos',
+                    type: 'POST',
+                    data: data,
+                    enctype: 'multipart/form-data',
+                    processData: false,  // tell jQuery not to process the data
+                    contentType: false   // tell jQuery not to set contentType
+                })
+                    .done(function () {
+                        alert("Job successfully added. You will get a notification when processing is complete.");
+                        $("#multipleFileForm")[0].reset(); // reset the form
+                    })
+                    .fail(function (error) {
+                        console.log(error); // show the error.
+                    });
+            })
+        </script>
+
+
+    {% endif %}
 
 {% endblock %}
