@@ -80,6 +80,9 @@ def video_testing_page():
     # concepts = analyse_text("bitcoin.json")["concepts"]
     # summary = summarize_text("bitcoin.json")
 
+    from app import send_email
+    print(send_email())
+
     return render_template("video.html",
                            filepath="/video/Bitcoin Video.mp4",
                            document_id=document_id,

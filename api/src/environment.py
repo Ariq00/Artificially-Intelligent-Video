@@ -23,3 +23,10 @@ meaningcloud_license_key = os.environ.get("MEANINGCLOUD_LICENSE_KEY")
 secret_key = os.environ.get("SECRET_KEY")
 
 mongo_host = os.environ.get("MONGO_HOST")
+
+mail_server = os.environ.get('MAIL_SERVER')
+mail_port = os.environ.get('MAIL_PORT')
+mail_username = os.environ.get('MAIL_USERNAME')
+mail_password = os.environ.get('MAIL_PASSWORD')
+mail_use_tls = bool(int(os.environ.get('MAIL_USE_TLS')))
+mail_use_ssl = bool(int(os.environ.get('MAIL_USE_SSL')))

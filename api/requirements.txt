@@ -10,3 +10,4 @@ dnspython==2.2.1
 flask-wtf==1.0.1
 email-validator==1.2.1
 flask-login==0.6.1
+Flask-Mail==0.9.1
