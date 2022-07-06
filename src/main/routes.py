@@ -80,9 +80,7 @@ def video_testing_page():
     document_id = "66097691-d0f9-41db-b030-24fac3b0d813"
     # concepts = analyse_text("bitcoin.json")["concepts"]
     # summary = summarize_text("bitcoin.json")
-
-    print(send_email())
-
+    
     return render_template("video.html",
                            filepath="/video/Bitcoin Video.mp4",
                            document_id=document_id,

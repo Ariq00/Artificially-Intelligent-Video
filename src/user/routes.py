@@ -7,7 +7,7 @@ from datetime import datetime
 import json
 import os
 from main.utilities import process_upload, \
-    summarise_and_analyse
+    summarise_and_analyse, send_email
 from transcribe import process_audio
 from ibm_cloud_sdk_core.api_exception import ApiException
 import watson_discovery
@@ -139,7 +139,11 @@ def upload_multiple_videos():
                 media_title] = "Could not analyse video. Video has no audio content!"
             continue
 
-    # TODO: send email notification
+    # send email
+    msg_body = f"Hi {current_user.first_name}. The status of your submitted videos is shown below:\n\n"
+    for video_title in video_status_dict:
+        msg_body += f"{video_title}: {video_status_dict[video_title]}\n"
+    msg_body += "\nRegards,\nSmartVideo "
+    send_email("Your videos have been saved to your account.", msg_body)
 
-    print(video_status_dict)
     return video_status_dict

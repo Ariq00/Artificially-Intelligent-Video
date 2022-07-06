@@ -70,10 +70,10 @@ def summarise_and_analyse(transcript_filename):
     return summary, score, sentiment, concepts
 
 
-def send_email():
-    msg = Message('Hello from the other side!',
+def send_email(subject, msg_content):
+    msg = Message(subject,
                   sender='smart.video.project@gmail.com',
-                  recipients=['smart.video.project@gmail.com'])
-    msg.body = "Hey Paul, sending you this email from my Flask app, lmk if it works"
+                  recipients=[current_user.email])
+    msg.body = msg_content
     mail.send(msg)
-    return "Message sent!"
+    print("Email sent", msg.body)
