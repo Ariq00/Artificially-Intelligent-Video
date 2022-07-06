@@ -136,7 +136,16 @@
         </div>
     </section>
 
-    {% if current_user.is_authenticated %}
+    {% if current_user.is_anonymous %}
+        <section class="pt-5">
+            <div class="container">
+                <h1>Why Create an Account?</h1>
+                some cards here with reasons for signing up
+            </div>
+        </section>
+
+
+    {% else %}
         <section class="pt-5">
             <div class="container">
                 <h1>Need to Upload Multiple Files?</h1>
@@ -145,7 +154,8 @@
                     line.
                     Alternatively upload multiple files below.
                     <br>
-                    2. Get an email notification when processing of all the
+                    2. You will get an email notification when processing of
+                    all the
                     videos has been completed.
                     <br>
                     3. Query your videos from the Saved Videos section!
@@ -191,7 +201,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="multipleFile" class="form-label">Alternatively
-                                upload multiple MP3/MP4 files</label>
+                                upload multiple MP3 / MP4 files</label>
                         </div>
                     </div>
 

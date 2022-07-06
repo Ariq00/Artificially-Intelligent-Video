@@ -139,5 +139,7 @@ def upload_multiple_videos():
                 media_title] = "Could not analyse video. Video has no audio content!"
             continue
 
+    # TODO: send email notification
+
     print(video_status_dict)
     return video_status_dict
