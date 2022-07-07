@@ -11,21 +11,28 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route("/register", methods=["POST", "GET"])
 def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data)
-        user = User(
-            password=hashed_password,
-            email=form.email.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-        )
-        user.save()
-        flash(f"Thank you for signing up {form.first_name.data}!", 'success')
-        login_user(user)
+    if current_user.is_authenticated:
+        flash(f"You are already logged in!",
+              'info')
         return redirect(url_for('main.home'))
 
-    return render_template('register.html', title='Register', form=form)
+    else:
+        form = RegistrationForm()
+        if form.validate_on_submit():
+            hashed_password = generate_password_hash(form.password.data)
+            user = User(
+                password=hashed_password,
+                email=form.email.data,
+                first_name=form.first_name.data,
+                last_name=form.last_name.data,
+            )
+            user.save()
+            flash(f"Thank you for signing up {form.first_name.data}!",
+                  'success')
+            login_user(user)
+            return redirect(url_for('main.home'))
+
+        return render_template('register.html', title='Register', form=form)
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
