@@ -1,6 +1,7 @@
 import pytest
 from selenium import webdriver
-from selenium.webdriver import ChromeOptions
+from selenium.webdriver import EdgeOptions
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 import multiprocessing
 from setup_app import create_app
 import mongoengine
@@ -42,35 +43,26 @@ def user(db):
     """ Creates a user without a profile. """
     user = User(first_name="Person", last_name='One',
                 email='test_user1@test.com',
-                password=generate_password_hash("password1"))
+                password=generate_password_hash("test_password"))
     user.save()
     return user
 
 
 @pytest.fixture(scope='class')
-def chrome_driver(request):
-    """ Fixture for selenium webdriver with options to support running in
-    GitHub actions """
-    options = ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--start-maximized")
-    # options.add_argument("--window-size=1920,1080")
-    options.add_argument("--window-size=1200x600")
-    chrome_driver = webdriver.Chrome(options=options)
-    request.cls.driver = chrome_driver
+def driver(request):
+    options = EdgeOptions()
+    driver = webdriver.Edge(EdgeChromiumDriverManager().install(),
+                            options=options)
+    request.cls.driver = driver
     yield
-    chrome_driver.close()
+    driver.close()
 
 
 @pytest.fixture(scope='class')
 def run_app(app):
-    """
-    Fixture to run the Flask app
-    """
-    process = multiprocessing.Process(target=app.run, args=())
+    # Fixture for running flask app with selenium webdriver
+    process = multiprocessing.get_context('fork').Process(target=app.run,
+                                                          args=())
     process.start()
     yield process
     process.terminate()

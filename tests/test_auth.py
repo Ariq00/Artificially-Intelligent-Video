@@ -23,3 +23,20 @@ class TestRegistration:
             password_repeat='password'
         ), follow_redirects=True)
         assert b"Email address already in use" in response.data
+
+    def test_passwords_not_matching(self, client, user):
+        response = client.post('/register', data=dict(
+            first_name='Test',
+            last_name='User',
+            email='test_user1@test.com',
+            password='password',
+            password_repeat='different_password'
+        ), follow_redirects=True)
+        assert b"Passwords must match" in response.data
+
+    def test_login(self, client, user):
+        response = client.post('/login', data=dict(
+            email=user.email,
+            password='test_password'
+        ), follow_redirects=True)
+        assert b"Welcome Person. You are now logged in!" in response.data
