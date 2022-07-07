@@ -11,6 +11,7 @@ from main.utilities import process_upload, \
 from transcribe import process_audio
 from ibm_cloud_sdk_core.api_exception import ApiException
 import watson_discovery
+from pydub.exceptions import CouldntDecodeError
 
 user_bp = Blueprint('user', __name__)
 
@@ -95,10 +96,10 @@ def upload_multiple_videos():
 
         if upload_result["status"] == "failed":
             if upload_result.get("media_title"):
-                video_status_dict[upload_result["media_title"]] = \
-                    upload_result["message"]
+                title = upload_result["media_title"]
             else:
-                video_status_dict[f"Video {index}"] = upload_result["message"]
+                title = f"Video {index}"
+            video_status_dict[title] = upload_result["message"]
 
             continue
 
@@ -107,8 +108,12 @@ def upload_multiple_videos():
                 "static_media_filepath"]
 
         # transcribe audio
-        process_audio(static_media_filepath, user_id,
-                      request.form['languageSubmit'])
+        try:
+            process_audio(static_media_filepath, user_id,
+                          request.form['languageSubmit'])
+        except CouldntDecodeError:
+            video_status_dict[media_title] = "Couldn't decode file"
+            continue
 
         # upload to discovery
         discovery = watson_discovery.setup_discovery()

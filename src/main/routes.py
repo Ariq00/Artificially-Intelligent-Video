@@ -7,7 +7,7 @@ from watson_assistant import watson_assistant_query
 from main.utilities import process_upload, \
     summarise_and_analyse
 from ibm_cloud_sdk_core.api_exception import ApiException
-from main.utilities import send_email
+from pydub.exceptions import CouldntDecodeError
 
 main_bp = Blueprint('main', __name__)
 
@@ -35,8 +35,12 @@ def home():
                                                  upload_result[
                                                      "static_media_filepath"]
         # transcribe audio
-        process_audio(static_media_filepath, user_id,
-                      request.form['languageSubmit'])
+        try:
+            process_audio(static_media_filepath, user_id,
+                          request.form['languageSubmit'])
+        except CouldntDecodeError:
+            flash("Couldn't decode file!", "danger")
+            return redirect(url_for("main.home"))
 
         # upload to discovery
         discovery = watson_discovery.setup_discovery()
@@ -80,7 +84,7 @@ def video_testing_page():
     document_id = "66097691-d0f9-41db-b030-24fac3b0d813"
     # concepts = analyse_text("bitcoin.json")["concepts"]
     # summary = summarize_text("bitcoin.json")
-    
+
     return render_template("video.html",
                            filepath="/video/Bitcoin Video.mp4",
                            document_id=document_id,
