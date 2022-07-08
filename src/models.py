@@ -65,7 +65,6 @@ class User(Document, UserMixin):
                 leeway=datetime.timedelta(seconds=10),
                 algorithms=["HS256"]
             )
-            print(data)
         except:
             return False
         return User.objects(id=data.get("confirm")).first()
