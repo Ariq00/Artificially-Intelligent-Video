@@ -42,7 +42,6 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.objects(email=form.email.data).first()
-        print(user.email)
         login_user(user, remember=form.remember.data,
                    duration=timedelta(minutes=60))
         flash(f"Welcome {current_user.first_name}. You are now logged in!",
