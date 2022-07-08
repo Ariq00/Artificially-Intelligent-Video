@@ -24,6 +24,16 @@ class TestRegistration:
         ), follow_redirects=True)
         assert b"Email address already in use" in response.data
 
+    def test_invalid_email_registration(self, client, user):
+        response = client.post('/register', data=dict(
+            first_name='Test',
+            last_name='User',
+            email='not_an_email',
+            password='password',
+            password_repeat='password'
+        ), follow_redirects=True)
+        assert b"Invalid Email" in response.data
+
     def test_passwords_not_matching(self, client, user):
         response = client.post('/register', data=dict(
             first_name='Test',
@@ -34,9 +44,23 @@ class TestRegistration:
         ), follow_redirects=True)
         assert b"Passwords must match" in response.data
 
-    def test_login(self, client, user):
+    def test_valid_login(self, client, user):
         response = client.post('/login', data=dict(
             email=user.email,
             password='test_password'
         ), follow_redirects=True)
         assert b"Welcome Person. You are now logged in!" in response.data
+
+    def test_invalid_email(self, client, user):
+        response = client.post('/login', data=dict(
+            email="acccount_doesnt_exist@gmail.com",
+            password='test_password'
+        ), follow_redirects=True)
+        assert b"Please check the email entered and try again" in response.data
+
+    def test_incorrect_password(self, client, user):
+        response = client.post('/login', data=dict(
+            email=user.email,
+            password='incorrect_password'
+        ), follow_redirects=True)
+        assert b"check your password and try again" in response.data
