@@ -14,7 +14,7 @@ def create_app():
     app = Flask(__name__)
 
     app.secret_key = secret_key
-    # server name shouldn't include http prefix
+    # Note: server name shouldn't include http prefix
     app.config["SERVER_NAME"] = "25.cf.33a9.ip4.static.sl-reverse.com:31110"
     app.config[
         'MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # max payload size is 500mb
