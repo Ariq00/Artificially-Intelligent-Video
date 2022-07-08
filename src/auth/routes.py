@@ -40,20 +40,15 @@ def register():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    print("Not yet validated")
-    print(form.errors)
     if form.validate_on_submit():
-        print("... validated")
         user = User.objects(email=form.email.data).first()
         print(user.email)
         login_user(user, remember=form.remember.data,
                    duration=timedelta(minutes=60))
-        print("login successful")
         flash(f"Welcome {current_user.first_name}. You are now logged in!",
               'success')
         return redirect(url_for('main.home'))
 
-    print(form.errors)
     return render_template('login.html', title='Login', form=form)
 
 
