@@ -51,3 +51,27 @@ class LoginForm(FlaskForm):
                       'danger')
                 raise ValidationError(
                     'Incorrect password. Please double-check and try again.')
+
+
+class RequestPasswordResetForm(FlaskForm):
+    email = EmailField(label='Email Address',
+                       validators=[DataRequired(),
+                                   Email(message="Invalid Email")])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        users = User.objects(email=email.data)
+        if not users:
+            flash(f"Please check the email entered and try again.", 'danger')
+            raise ValidationError(
+                'No email associated with that account!')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField(label='Password', validators=[DataRequired()])
+    password_repeat = PasswordField(
+        label='Confirm Password',
+        validators=[DataRequired(),
+                    EqualTo('password',
+                            message='Passwords must match')])
+    submit = SubmitField('Reset Password')

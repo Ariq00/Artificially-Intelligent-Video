@@ -7,6 +7,9 @@ from mongoengine import (
     ReferenceField
 )
 from flask_login import UserMixin
+import jwt
+import datetime
+from environment import secret_key
 
 
 class Video(Document):
@@ -39,3 +42,30 @@ class User(Document, UserMixin):
     first_name = StringField(required=True)
     last_name = StringField(required=True)
     meta = {"collection": "users"}
+
+    def get_token(self, expires_sec=3600):
+        token = jwt.encode(
+            {
+                "confirm": str(self.id),
+                "exp": datetime.datetime.now(
+                    tz=datetime.timezone.utc) + datetime.timedelta(
+                    seconds=expires_sec)
+            },
+            secret_key,
+            algorithm="HS256"
+        )
+        return token
+
+    @staticmethod
+    def verify_token(token):
+        try:
+            data = jwt.decode(
+                token,
+                secret_key,
+                leeway=datetime.timedelta(seconds=10),
+                algorithms=["HS256"]
+            )
+            print(data)
+        except:
+            return False
+        return User.objects(id=data.get("confirm")).first()

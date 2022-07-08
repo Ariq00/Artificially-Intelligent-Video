@@ -73,10 +73,10 @@ def summarise_and_analyse(transcript_filename):
     return summary, score, sentiment, concepts
 
 
-def send_email(subject, msg_content):
+def send_email(subject, msg_content, recipient_email):
     msg = Message(subject,
                   sender='smart.video.project@gmail.com',
-                  recipients=[current_user.email])
+                  recipients=[recipient_email])
     msg.body = msg_content
     mail.send(msg)
     print("Email sent", msg.body)

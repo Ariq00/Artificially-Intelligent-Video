@@ -149,6 +149,7 @@ def upload_multiple_videos():
     for video_title in video_status_dict:
         msg_body += f"{video_title}: {video_status_dict[video_title]}\n"
     msg_body += "\nRegards,\nSmartVideo "
-    send_email("Your videos have been saved to your account.", msg_body)
+    send_email("Your videos have been saved to your account.", msg_body,
+               current_user.email)
 
     return video_status_dict
