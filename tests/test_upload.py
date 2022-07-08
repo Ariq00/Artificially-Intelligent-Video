@@ -39,6 +39,25 @@ class TestUpload:
         delete_document(response.text)
         assert b"Microwaves explained in ten seconds" in response.data
 
+    def test_invalid_file(self, client):
+        response = client.post('/', data=dict(
+            video='file',
+            languageSubmit='us',
+            file=open('../tests/test_upload_files/not_an_mp4_file.txt', 'rb'),
+        ), follow_redirects=True)
+        assert b"Please upload an MP3 or MP4 file!" in response.data
+
+    def test_valid_file(self, client):
+        response = client.post('/', data=dict(
+            video='file',
+            languageSubmit='us',
+            file=open(
+                '../tests/test_upload_files/Microwaves explained in ten seconds.mp4',
+                'rb'),
+        ), follow_redirects=True)
+        delete_document(response.text)
+        assert b"Microwaves_explained_in_ten_seconds.mp4" in response.data
+
 
 def delete_document(response_string):
     discovery = setup_discovery()
