@@ -6,73 +6,73 @@
     <div class="row">
         <h2 class="border-bottom mb-4 pt-4">Saved Videos</h2>
     </div>
+    {% if videos is defined and videos|length > 0 %}
+        <!--Search Bar-->
+        <section class="pt-3">
+            <form class="form-inline" method="GET"
+                  action="{{ url_for('user.search_saved_videos') }}">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label for="searchQuery"
+                               class="visually-hidden">Search</label>
+                        <input type="text" class="form-control"
+                               id="searchQuery" name="searchQuery"
+                               placeholder="Search all saved videos">
+                    </div>
 
-    <!--Search Bar-->
-    <section class="pt-3">
-        <form class="form-inline" method="GET"
-              action="{{ url_for('user.search_saved_videos') }}">
-            <div class="row">
-                <div class="col-sm-6">
-                    <label for="searchQuery"
-                           class="visually-hidden">Search</label>
-                    <input type="text" class="form-control"
-                           id="searchQuery" name="searchQuery"
-                           placeholder="Search all saved videos">
+                    <div class="col-sm-4">
+                        <button type="submit" class="btn btn-primary mb-3"
+                                id="searchButton">Search
+                        </button>
+                    </div>
+
                 </div>
-
-                <div class="col-sm-4">
-                    <button type="submit" class="btn btn-primary mb-3"
-                            id="searchButton">Search
-                    </button>
-                </div>
-
-            </div>
-        </form>
-    </section>
-
-    <div class="row">
-        {% for video in videos %}
-
-            <!--form for sending video ID-->
-            <form method="GET" action="{{ url_for('user.saved_videos') }}"
-                  id="{{ video.id }}" hidden>
-                <input type="hidden" name="videoID" value="{{ video.id }}">
             </form>
+        </section>
 
-            <div class="card m-3 p-0" style="width: 18.55rem;"
-                 id="{{ video.id }}_active">
-                <a href="#"
-                   onclick="document.getElementById('{{ video.id }}').submit()">
-                    {% if "mp3" in video.title %}
-                        <!-- https://www.flaticon.com/free-icon/mp3_337944 -->
-                        <img src="{{ url_for('static', filename="images/mp3_icon.png") }}"
-                             alt="" height="160">
-                    {% else %}
-                        <video src="{{ url_for('static', filename=video.filepath) }}"
-                               width="100%"
-                        ></video>
-                    {% endif %}
-                </a>
+        <div class="row">
+            {% for video in videos %}
 
-                <div class="card-body">
-                    <h5 class="card-title">{{ video.title }}</h5>
-                    <p class="card-text">{{ video.summary }}</p>
-                    <input type="checkbox"/>
+                <!--form for sending video ID-->
+                <form method="GET" action="{{ url_for('user.saved_videos') }}"
+                      id="{{ video.id }}" hidden>
+                    <input type="hidden" name="videoID" value="{{ video.id }}">
+                </form>
+
+                <div class="card m-3 p-0" style="width: 18.55rem;"
+                     id="{{ video.id }}_active">
+                    <a href="#"
+                       onclick="document.getElementById('{{ video.id }}').submit()">
+                        {% if "mp3" in video.title %}
+                            <!-- https://www.flaticon.com/free-icon/mp3_337944 -->
+                            <img src="{{ url_for('static', filename="images/mp3_icon.png") }}"
+                                 alt="" height="160">
+                        {% else %}
+                            <video src="{{ url_for('static', filename=video.filepath) }}"
+                                   width="100%"
+                            ></video>
+                        {% endif %}
+                    </a>
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                        <p class="card-text">{{ video.summary }}</p>
+                        <input type="checkbox"/>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
 
-    <form method="POST" action="{{ url_for('user.delete_saved_videos') }}">
-        <input type="text" name="video_ids_json" value="" hidden
-               id="videosToBeDeleted">
+        <form method="POST" action="{{ url_for('user.delete_saved_videos') }}">
+            <input type="text" name="video_ids_json" value="" hidden
+                   id="videosToBeDeleted">
 
-        <div class="col-sm-4 pt-5 mt-5">
-            <button class="btn btn-danger mb-3"
-                    id="deleteButton"
-                    hidden
-                    type="submit"
-                    onclick='
+            <div class="col-sm-4 pt-5 mt-5">
+                <button class="btn btn-danger mb-3"
+                        id="deleteButton"
+                        hidden
+                        type="submit"
+                        onclick='
                             var $active_cards = []
                             $(".activeCard").each(function(){
                             const id = $(this).attr("id");
@@ -83,28 +83,34 @@
                             document.getElementById("videosToBeDeleted").value = active_cards_as_json;
                             console.log($active_cards)
                             '
-            >Delete selected videos
-            </button>
-        </div>
-    </form>
+                >Delete selected videos
+                </button>
+            </div>
+        </form>
 
 
-    <script>
-        $(document).ready(function () {
-            // Card Multi Select
-            $('input[type=checkbox]').click(function () {
-                if ($(this).parent().parent().hasClass('activeCard')) {
-                    $(this).parent().parent().removeClass('activeCard');
-                } else {
-                    $(this).parent().parent().addClass('activeCard');
-                }
-                if ($(".activeCard").length) {
-                    $("#deleteButton").removeAttr('hidden');
-                } else {
-                    $("#deleteButton").attr('hidden', true);
-                }
+        <script>
+            $(document).ready(function () {
+                // Card Multi Select
+                $('input[type=checkbox]').click(function () {
+                    if ($(this).parent().parent().hasClass('activeCard')) {
+                        $(this).parent().parent().removeClass('activeCard');
+                    } else {
+                        $(this).parent().parent().addClass('activeCard');
+                    }
+                    if ($(".activeCard").length) {
+                        $("#deleteButton").removeAttr('hidden');
+                    } else {
+                        $("#deleteButton").attr('hidden', true);
+                    }
+                });
             });
-        });
-    </script>
+        </script>
+
+    {% else %}
+        <h3 class="pt-4">You have no saved videos.</h3>
+
+    {% endif %}
+
 
 {% endblock %}
