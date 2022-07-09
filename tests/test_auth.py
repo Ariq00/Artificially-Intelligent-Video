@@ -1,6 +1,13 @@
 from models import User
 
 
+def login(client, user):
+    return client.post('/login', data=dict(
+        email=user.email,
+        password='Test_password1'
+    ), follow_redirects=True)
+
+
 class TestRegistration:
     def test_registration_successful(self, client, user):
         user_count = len(User.objects())
@@ -45,10 +52,7 @@ class TestRegistration:
         assert b"Passwords must match" in response.data
 
     def test_valid_login(self, client, user):
-        response = client.post('/login', data=dict(
-            email=user.email,
-            password='Test_password1'
-        ), follow_redirects=True)
+        response = login(client, user)
         assert b"Welcome Person. You are now logged in!" in response.data
 
     def test_invalid_email(self, client, user):
@@ -64,3 +68,12 @@ class TestRegistration:
             password='incorrect_password'
         ), follow_redirects=True)
         assert b"check your password and try again" in response.data
+
+    def test_change_password(self, client, user):
+        login(client, user)
+        response = client.post('/my_account', data=dict(
+            email="",
+            password='New_password1',
+            password_repeat='New_password1'
+        ), follow_redirects=True)
+        assert b"Password updated successfully" in response.data
