@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, request
 from werkzeug.security import generate_password_hash
 from auth.forms import (RegistrationForm, LoginForm,
                         RequestPasswordResetForm, ResetPasswordForm,
@@ -35,7 +35,8 @@ def register():
             subject = "Confirm your Email Address"
             msg_body = f"Hi {user.first_name},\n\n" \
                        f"Confirm your email using the following link:\n\n" \
-                       f"{url_for('auth.verify_email', token=token, _external=True)}"
+                       f"{url_for('auth.verify_email', token=token, _external=True)}" \
+                       f"\n\nThis link will expire in 24 hours."
             send_email(subject, msg_body, user.email)
 
             flash(
@@ -46,25 +47,34 @@ def register():
         return render_template('register.html', title='Register', form=form)
 
 
-@auth_bp.route('/verify_email/<token>', methods=['GET', 'POST'])
+@auth_bp.route('/verify_email/<token>/', methods=['GET', 'POST'])
 def verify_email(token):
     user = User.verify_token(token)
+    new_email = request.args.get('new_email', None)
 
     if not user:
         flash("Token is invalid. It may have expired.", "danger")
         return redirect(url_for('auth.login'))
 
-    # Update the email address for user
-    if user.new_email != "":
-        user.email = user.new_email
-        user.new_email = ""
+    # Update the email address for an existing user
+    if user.new_email != "":  # check if new user or a user changing their email
+        if user.new_email == new_email:  # check URL hasn't been tampered with
+            user.email = user.new_email
+            user.new_email = ""
+            flash("Your email address has been updated successfully!",
+                  "success")
 
-    user.email_verified = True
+        else:
+            flash("Please double-check the URL on the email and try again.",
+                  "danger")
+
+    else:
+        user.email_verified = True
+        flash("Your email address has been successfully verified!", "success")
+
     user.save()
-
     login_user(user)
 
-    flash("Your email has been successfully verified!", "success")
     return redirect(url_for('main.home'))
 
 
@@ -80,7 +90,7 @@ def login():
             send_email(subject, msg_body, user.email)
 
             flash(
-                "Please verify your email first! Another verification email has been sent",
+                "Please verify your email address first! Another verification email has been sent",
                 "warning")
             return redirect(url_for('auth.login'))
 
@@ -110,12 +120,13 @@ def my_account():
             token = current_user.get_token(expires_sec=3600 * 24)
             subject = "Confirm Your New Email Address"
             msg_body = f"Hi {current_user.first_name},\n\n" \
-                       f"Confirm your email using the following link:\n\n" \
-                       f"{url_for('auth.verify_email', token=token, _external=True)}"
+                       f"Confirm your new email address using the following link:\n\n" \
+                       f"{url_for('auth.verify_email', token=token, new_email=current_user.new_email, _external=True)}" \
+                       f"\n\nThis link will expire in 24 hours."
             send_email(subject, msg_body, current_user.new_email)
             flash(
-                "Verification email has been sent to new email address."
-                " Until this is verified, your email address will stay the same ",
+                "Verification email has been sent to the new email address. "
+                "Until this is verified, your email address will stay the same ",
                 "info")
 
     current_user.save()
@@ -137,7 +148,7 @@ def request_password_reset():
         msg_body = f"Hi {user.first_name},\n\n" \
                    f"Reset your password through the following link:" \
                    f"\n\n{url_for('auth.reset_password', reset_token=reset_token, _external=True)}" \
-                   f"\n\nPlease ignore this email if you did not make this request."
+                   f"\n\nThis link will expire in 1 hour.\n\nPlease ignore this email if you did not make this request."
 
         send_email(subject, msg_body, recipient_email)
         flash(
