@@ -42,6 +42,7 @@ class User(Document, UserMixin):
     password = StringField(required=True)
     first_name = StringField(required=True)
     last_name = StringField(required=True)
+    new_email = StringField(default="")
     email_verified = BooleanField(default=False)
     meta = {"collection": "users"}
 

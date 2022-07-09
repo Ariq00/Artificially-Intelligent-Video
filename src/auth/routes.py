@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
 from werkzeug.security import generate_password_hash
 from auth.forms import (RegistrationForm, LoginForm,
-                        RequestPasswordResetForm, ResetPasswordForm)
+                        RequestPasswordResetForm, ResetPasswordForm,
+                        UpdateAccountForm)
 from models import User
 from datetime import timedelta
 from flask_login import login_user, logout_user, login_required, current_user
@@ -52,6 +53,12 @@ def verify_email(token):
     if not user:
         flash("Token is invalid. It may have expired.", "danger")
         return redirect(url_for('auth.login'))
+
+    # Update the email address for user
+    if user.new_email != "":
+        user.email = user.new_email
+        user.new_email = ""
+
     user.email_verified = True
     user.save()
 
@@ -84,6 +91,35 @@ def login():
         return redirect(url_for('main.home'))
 
     return render_template('login.html', title='Login', form=form)
+
+
+@auth_bp.route('/my_account', methods=['GET', 'POST'])
+@login_required
+def my_account():
+    form = UpdateAccountForm()
+
+    if form.validate_on_submit():
+
+        if form.password.data:
+            current_user.password = generate_password_hash(form.password.data)
+            flash("Password updated successfully.", "success")
+
+        if form.email.data:
+            current_user.new_email = form.email.data
+
+            token = current_user.get_token(expires_sec=3600 * 24)
+            subject = "Confirm Your New Email Address"
+            msg_body = f"Hi {current_user.first_name},\n\n" \
+                       f"Confirm your email using the following link:\n\n" \
+                       f"{url_for('auth.verify_email', token=token, _external=True)}"
+            send_email(subject, msg_body, current_user.new_email)
+            flash(
+                "Verification email has been sent to new email address."
+                " Until this is verified, your email address will stay the same ",
+                "info")
+
+    current_user.save()
+    return render_template("my_account.html", title='My Account', form=form)
 
 
 @auth_bp.route('/request_password_reset', methods=['GET', 'POST'])
@@ -146,12 +182,6 @@ def logout():
     logout_user()
     flash(f"You have been logged out", 'info')
     return redirect(url_for('main.home'))
-
-
-@auth_bp.route('/my_account')
-@login_required
-def my_account():
-    return render_template("my_account.html")
 
 
 @login_manager.user_loader

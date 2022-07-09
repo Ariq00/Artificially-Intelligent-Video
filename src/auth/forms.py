@@ -41,7 +41,7 @@ class LoginForm(FlaskForm):
         if not users:
             flash(f"Please check the email entered and try again.", 'danger')
             raise ValidationError(
-                'No email associated with that account!')
+                'No account associated with that email!')
 
     def validate_password(self, password):
         user = User.objects(email=self.email.data).first()
@@ -64,7 +64,7 @@ class RequestPasswordResetForm(FlaskForm):
         if not users:
             flash(f"Please check the email entered and try again.", 'danger')
             raise ValidationError(
-                'No email associated with that account!')
+                'No account associated with that email!')
 
 
 class ResetPasswordForm(FlaskForm):
@@ -75,3 +75,19 @@ class ResetPasswordForm(FlaskForm):
                     EqualTo('password',
                             message='Passwords must match')])
     submit = SubmitField('Reset Password')
+
+
+class UpdateAccountForm(FlaskForm):
+    email = EmailField(label='New email address', validators=[])
+    password = PasswordField(label='New password', validators=[])
+    password_repeat = PasswordField(
+        label='Confirm new password',
+        validators=[EqualTo('password',
+                            message='Passwords must match')])
+    submit = SubmitField('Update Account Details')
+
+    def validate_email(self, email):
+        users = User.objects(email=email.data)
+        if users:
+            raise ValidationError(
+                'Email address already in use')
