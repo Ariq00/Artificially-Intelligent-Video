@@ -40,7 +40,8 @@ class RegistrationForm(FlaskForm):
     def validate_password(self, password):
         if len(password_policy.test(password.data)) > 0:
             flash(
-                "Password must be at least 8 characters and contain at least 1 uppercase character and 1 number")
+                "Password must be at least 8 characters and contain at least 1 uppercase character and 1 number",
+                "danger")
             raise ValidationError(
                 'Password must be at least 8 characters and contain at least 1 uppercase character and 1 number')
 
@@ -94,7 +95,8 @@ class ResetPasswordForm(FlaskForm):
     def validate_password(self, password):
         if len(password_policy.test(password.data)) > 0:
             flash(
-                "Password must be at least 8 characters and contain at least 1 uppercase character and 1 number")
+                "Password must be at least 8 characters and contain at least 1 uppercase character and 1 number",
+                "danger")
             raise ValidationError(
                 'Password must be at least 8 characters and contain at least 1 uppercase character and 1 number')
 
