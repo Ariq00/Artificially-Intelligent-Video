@@ -8,8 +8,8 @@ class TestRegistration:
             first_name='Test',
             last_name='User',
             email='test_user2@test.com',
-            password='password',
-            password_repeat='password'
+            password='Test_password2',
+            password_repeat='Test_password2'
         ), follow_redirects=True)
         assert len(User.objects()) - user_count == 1
         assert b"Thank you for signing up Test!" in response.data
@@ -19,8 +19,8 @@ class TestRegistration:
             first_name='Test',
             last_name='User',
             email='test_user1@test.com',
-            password='password',
-            password_repeat='password'
+            password='Test_password2',
+            password_repeat='Test_password2'
         ), follow_redirects=True)
         assert b"Email address already in use" in response.data
 
@@ -29,8 +29,8 @@ class TestRegistration:
             first_name='Test',
             last_name='User',
             email='not_an_email',
-            password='password',
-            password_repeat='password'
+            password='Test_password2',
+            password_repeat='Test_password2'
         ), follow_redirects=True)
         assert b"Invalid Email" in response.data
 
@@ -39,15 +39,15 @@ class TestRegistration:
             first_name='Test',
             last_name='User',
             email='test_user1@test.com',
-            password='password',
-            password_repeat='different_password'
+            password='Test_password2',
+            password_repeat='Different_password2'
         ), follow_redirects=True)
         assert b"Passwords must match" in response.data
 
     def test_valid_login(self, client, user):
         response = client.post('/login', data=dict(
             email=user.email,
-            password='test_password'
+            password='Test_password1'
         ), follow_redirects=True)
         assert b"Welcome Person. You are now logged in!" in response.data
 

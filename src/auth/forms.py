@@ -5,6 +5,14 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, \
 from wtforms.validators import DataRequired, EqualTo, ValidationError, Email
 from models import User
 from werkzeug.security import check_password_hash
+from password_strength import PasswordPolicy
+
+password_policy = PasswordPolicy.from_names(
+    # TODO: uncomment this before deployment
+    # length=8,  # min length: 8
+    # uppercase=1,  # need min. 1 uppercase letters
+    # numbers=1,  # need min. 1 digits
+)
 
 
 class RegistrationForm(FlaskForm):
@@ -28,6 +36,13 @@ class RegistrationForm(FlaskForm):
         if users:
             raise ValidationError(
                 'Email address already in use')
+
+    def validate_password(self, password):
+        if len(password_policy.test(password.data)) > 0:
+            flash(
+                "Password must be at least 8 characters and contain at least 1 uppercase character and 1 number")
+            raise ValidationError(
+                'Password must be at least 8 characters and contain at least 1 uppercase character and 1 number')
 
 
 class LoginForm(FlaskForm):
@@ -76,6 +91,13 @@ class ResetPasswordForm(FlaskForm):
                             message='Passwords must match')])
     submit = SubmitField('Reset Password')
 
+    def validate_password(self, password):
+        if len(password_policy.test(password.data)) > 0:
+            flash(
+                "Password must be at least 8 characters and contain at least 1 uppercase character and 1 number")
+            raise ValidationError(
+                'Password must be at least 8 characters and contain at least 1 uppercase character and 1 number')
+
 
 class UpdateAccountForm(FlaskForm):
     email = EmailField(label='New email address', validators=[])
@@ -91,3 +113,11 @@ class UpdateAccountForm(FlaskForm):
         if users:
             raise ValidationError(
                 'Email address already in use')
+
+    def validate_password(self, password):
+        if len(password_policy.test(password.data)) > 0:
+            flash(
+                "Password must be at least 8 characters and contain at least 1 uppercase character and 1 number",
+                "danger")
+            raise ValidationError(
+                'Password must be at least 8 characters and contain at least 1 uppercase character and 1 number')

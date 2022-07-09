@@ -16,3 +16,4 @@ PyJWT==2.4.0
 requests==2.28.1
 pytest==7.1.2
 selenium==4.3.0
+password-strength==0.0.3.post2

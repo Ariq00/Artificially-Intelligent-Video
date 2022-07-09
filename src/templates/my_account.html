@@ -46,20 +46,33 @@
             <div class="form-group">
                 {{ form.email.label }}
                 {% if form.email.errors %}
-                    {{ form.email(class="form-control is-invalid", placeholder="Enter email") }}
+                    {{ form.email(class="form-control is-invalid", placeholder="Optional: enter new email") }}
                     <div class="invalid-feedback">
                         {% for error in form.email.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.email(class="form-control", placeholder="Optional: enter email") }}
+                    {{ form.email(class="form-control", placeholder="Optional: enter newemail") }}
                 {% endif %}
             </div>
 
             <div class="form-group pt-3">
                 {{ form.password.label }}
-                {{ form.password(class="form-control", placeholder="Optional: enter new password") }}
+                {% if form.password.errors %}
+                    {{ form.password(class="form-control is-invalid", placeholder="Optional: enter new password") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.password(class="form-control", placeholder="Optional: enter new password") }}
+                    <small class="form-text text-muted">
+                        Must be at least 8 characters and contain at least 1
+                        uppercase character and 1 number.
+                    </small>
+                {% endif %}
             </div>
 
             <div class="form-group pt-3">
