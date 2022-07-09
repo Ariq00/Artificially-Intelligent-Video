@@ -79,4 +79,4 @@ def send_email(subject, msg_content, recipient_email):
                   recipients=[recipient_email])
     msg.body = msg_content
     mail.send(msg)
-    print("Email sent", msg.body)
+    return msg_content
