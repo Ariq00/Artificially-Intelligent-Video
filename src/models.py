@@ -4,7 +4,8 @@ from mongoengine import (
     IntField,
     ListField,
     StringField,
-    ReferenceField
+    ReferenceField,
+    BooleanField
 )
 from flask_login import UserMixin
 import jwt
@@ -41,6 +42,7 @@ class User(Document, UserMixin):
     password = StringField(required=True)
     first_name = StringField(required=True)
     last_name = StringField(required=True)
+    email_verified = BooleanField(default=False)
     meta = {"collection": "users"}
 
     def get_token(self, expires_sec=3600):

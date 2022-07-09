@@ -15,7 +15,7 @@ def create_app():
 
     app.secret_key = secret_key
     # Note: server name shouldn't include http prefix
-    app.config["SERVER_NAME"] = "25.cf.33a9.ip4.static.sl-reverse.com:31110"
+    # app.config["SERVER_NAME"] = "25.cf.33a9.ip4.static.sl-reverse.com:31110"
     app.config[
         'MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # max payload size is 500mb
     app.config['MAIL_SERVER'] = mail_server

@@ -52,7 +52,8 @@ def db(app):
 def user(db):
     user = User(first_name="Person", last_name='One',
                 email='test_user1@test.com',
-                password=generate_password_hash("test_password"))
+                password=generate_password_hash("test_password"),
+                email_verified=True)
     user.save()
     return user
 

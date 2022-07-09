@@ -27,14 +27,38 @@ def register():
                 email=form.email.data,
                 first_name=form.first_name.data,
                 last_name=form.last_name.data,
+                email_verified=False
             )
             user.save()
-            flash(f"Thank you for signing up {form.first_name.data}!",
-                  'success')
-            login_user(user)
-            return redirect(url_for('main.home'))
+            token = user.get_token(expires_sec=3600 * 24)
+            subject = "Confirm your Email Address"
+            msg_body = f"Hi {user.first_name},\n\n" \
+                       f"Confirm your email using the following link:\n\n" \
+                       f"{url_for('auth.verify_email', token=token, _external=True)}"
+            send_email(subject, msg_body, user.email)
+
+            flash(
+                f"Thank you for signing up {form.first_name.data}! Please verify your email to complete registration.",
+                'info')
+            return redirect(url_for('auth.login'))
 
         return render_template('register.html', title='Register', form=form)
+
+
+@auth_bp.route('/verify_email/<token>', methods=['GET', 'POST'])
+def verify_email(token):
+    user = User.verify_token(token)
+
+    if not user:
+        flash("Token is invalid. It may have expired.", "danger")
+        return redirect(url_for('auth.login'))
+    user.email_verified = True
+    user.save()
+
+    login_user(user)
+
+    flash("Your email has been successfully verified!", "success")
+    return redirect(url_for('main.home'))
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -42,6 +66,17 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.objects(email=form.email.data).first()
+        if not user.email_verified:
+            token = user.get_token(expires_sec=3600 * 24)
+            subject = "Confirm your Email Address"
+            msg_body = f"Hi {user.first_name},\n\nYou requested another email confirmation link. Confirm your email using the following link:\n\n{url_for('auth.verify_email', token=token, _external=True)}"
+            send_email(subject, msg_body, user.email)
+
+            flash(
+                "Please verify your email first! Another verification email has been sent",
+                "warning")
+            return redirect(url_for('auth.login'))
+
         login_user(user, remember=form.remember.data,
                    duration=timedelta(minutes=60))
         flash(f"Welcome {current_user.first_name}. You are now logged in!",
