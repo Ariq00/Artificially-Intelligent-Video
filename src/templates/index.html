@@ -324,13 +324,21 @@
 
 
         <script>
+            function job_added_message() {
+                let flashed_message = '<div class="alert alert-info">' +
+                    'Job successfully added! You will get an email notification when processing is complete.</div>'
+                let header = document.getElementById("header")
+                header.insertAdjacentHTML("afterend", flashed_message)
+            }
+
             $('#multipleYouTubeForm').submit(function (e) {
 
                 e.preventDefault(); // prevent from submitting form directly
                 var multiple_youtube_form = $("#multipleYouTubeForm")
                 var data = multiple_youtube_form.serializeArray()
 
-                alert("Job successfully added! You will get an email notification when processing is complete.");
+                {#alert("Job successfully added! You will get an email notification when processing is complete.");#}
+                job_added_message()
                 multiple_youtube_form[0].reset(); // reset the form
 
                 $.ajax({
@@ -357,7 +365,8 @@
                 data.append('video', 'file')
                 data.append('languageSubmit', 'us')
 
-                alert("Job successfully added! You will get an email notification when processing is complete.");
+                {#alert("Job successfully added! You will get an email notification when processing is complete.");#}
+                job_added_message()
                 $("#multipleFileForm")[0].reset(); // reset the form
 
                 $.ajax({
@@ -373,7 +382,6 @@
                     });
             })
         </script>
-
 
     {% endif %}
 

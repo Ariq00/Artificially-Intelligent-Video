@@ -1,5 +1,5 @@
 from flask import render_template, request, Blueprint, flash, redirect, \
-    url_for, jsonify, session
+    url_for, session
 from models import Video
 from flask_login import current_user, login_required
 from watson_assistant import watson_assistant_query
@@ -145,10 +145,11 @@ def upload_multiple_videos():
             continue
 
     # send email
-    msg_body = f"Hi {current_user.first_name}. The status of your submitted videos is shown below:\n\n"
+    msg_body = f"Hi {current_user.first_name},\n\nThe status of your submitted videos is shown below:\n\n"
     for video_title in video_status_dict:
         msg_body += f"{video_title}: {video_status_dict[video_title]}\n"
-    msg_body += "\nRegards,\nSmartVideo "
+    msg_body += f"\nYou can find these videos in your Saved Videos section at:\n\n" \
+                f"{url_for('user.saved_videos', _external=True)}\n"
     send_email("Your videos have been saved to your account.", msg_body,
                current_user.email)
 
