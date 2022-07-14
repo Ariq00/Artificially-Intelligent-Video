@@ -25,7 +25,7 @@ def register():
             hashed_password = generate_password_hash(form.password.data)
             user = User(
                 password=hashed_password,
-                email=form.email.data,
+                email=form.email.data.lower(),
                 first_name=form.first_name.data,
                 last_name=form.last_name.data,
                 email_verified=False
@@ -82,7 +82,7 @@ def verify_email(token):
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.objects(email=form.email.data).first()
+        user = User.objects(email=form.email.data.lower()).first()
         if not user.email_verified:
             token = user.get_token(expires_sec=3600 * 24)
             subject = "Confirm your Email Address"
@@ -115,7 +115,7 @@ def my_account():
             flash("Password updated successfully.", "success")
 
         if form.email.data:
-            current_user.new_email = form.email.data
+            current_user.new_email = form.email.data.lower()
 
             token = current_user.get_token(expires_sec=3600 * 24)
             subject = "Confirm Your New Email Address"
@@ -140,7 +140,7 @@ def request_password_reset():
     form = RequestPasswordResetForm()
 
     if form.validate_on_submit():
-        user = User.objects(email=form.email.data).first()
+        user = User.objects(email=form.email.data.lower()).first()
         reset_token = user.get_token()
         subject = "Your Password Reset Request"
         recipient_email = user.email

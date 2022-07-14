@@ -8,10 +8,9 @@ from werkzeug.security import check_password_hash
 from password_strength import PasswordPolicy
 
 password_policy = PasswordPolicy.from_names(
-    # TODO: uncomment this before deployment
-    # length=8,  # min length: 8
-    # uppercase=1,  # need min. 1 uppercase letters
-    # numbers=1,  # need min. 1 digits
+    length=8,  # min length: 8
+    uppercase=1,  # need min. 1 uppercase letters
+    numbers=1,  # need min. 1 digits
 )
 
 
@@ -32,7 +31,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 
     def validate_email(self, email):
-        users = User.objects(email=email.data)
+        users = User.objects(email=email.data.lower())
         if users:
             raise ValidationError(
                 'Email address already in use')
@@ -53,14 +52,14 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Log in')
 
     def validate_email(self, email):
-        users = User.objects(email=email.data)
+        users = User.objects(email=email.data.lower())
         if not users:
             flash(f"Please check the email entered and try again.", 'danger')
             raise ValidationError(
                 'No account associated with that email!')
 
     def validate_password(self, password):
-        user = User.objects(email=self.email.data).first()
+        user = User.objects(email=self.email.data.lower()).first()
         if user:
             if not check_password_hash(user.password, password.data):
                 flash(f"Please double check your password and try again",
@@ -76,7 +75,7 @@ class RequestPasswordResetForm(FlaskForm):
     submit = SubmitField('Request Password Reset')
 
     def validate_email(self, email):
-        users = User.objects(email=email.data)
+        users = User.objects(email=email.data.lower())
         if not users:
             flash(f"Please check the email entered and try again.", 'danger')
             raise ValidationError(
@@ -111,7 +110,7 @@ class UpdateAccountForm(FlaskForm):
     submit = SubmitField('Update Account Details')
 
     def validate_email(self, email):
-        users = User.objects(email=email.data)
+        users = User.objects(email=email.data.lower())
         if users:
             raise ValidationError(
                 'Email address already in use')
