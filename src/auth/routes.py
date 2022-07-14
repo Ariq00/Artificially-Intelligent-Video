@@ -63,15 +63,18 @@ def verify_email(token):
             user.new_email = ""
             flash("Your email address has been updated successfully!",
                   "success")
-
         else:
             flash("Please double-check the URL on the email and try again.",
                   "danger")
 
     else:
-        user.email_verified = True
-        flash("Your email address has been successfully verified!", "success")
-
+        if not user.email_verified:
+            user.email_verified = True
+            flash("Your email address has been successfully verified!",
+                  "success")
+        else:
+            flash("Your email address has already been verified.",
+                  "warning")
     user.save()
     login_user(user)
 
