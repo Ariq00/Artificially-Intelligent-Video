@@ -76,21 +76,3 @@ def watson_response():
     text = request.get_json().get("message")
     document_id = request.get_json().get("document_id")
     return jsonify(watson_assistant_query(text, document_id))
-
-
-# THIS ROUTE IS FOR TESTING
-@main_bp.route('/video_test', methods=['GET'])
-def video_testing_page():
-    document_id = "66097691-d0f9-41db-b030-24fac3b0d813"
-    # concepts = analyse_text("bitcoin.json")["concepts"]
-    # summary = summarize_text("bitcoin.json")
-
-    return render_template("video.html",
-                           filepath="/video/Bitcoin Video.mp4",
-                           document_id=document_id,
-                           title="Bitcoin Video.mp4",
-                           summary="This is a summary",
-                           sentiment="negative".title(),
-                           score=20,
-                           concepts=["nakamoto", "bitcoin"],
-                           video_is_saved=True)

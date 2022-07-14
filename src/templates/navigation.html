@@ -15,10 +15,7 @@
 
         <div class="collapse navbar-collapse" id="navmenu">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a href="{{ url_for('main.video_testing_page') }}"
-                       class="nav-link">Video Testing Page</a>
-                </li>
+
                 {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a href="{{ url_for('user.saved_videos') }}"
