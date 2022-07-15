@@ -71,6 +71,8 @@ def delete_saved_videos():
             os.remove(f"./static{video.filepath}")
         except FileNotFoundError:
             print("Could not delete video file. File does not exist")
+        watson_discovery.delete_transcript(watson_discovery.setup_discovery(),
+                                           video.document_id)
         video.delete()
     flash("Videos successfully deleted", "info")
     return redirect(url_for("user.saved_videos"))
