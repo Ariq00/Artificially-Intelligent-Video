@@ -8,7 +8,7 @@ def login(client, user):
     ), follow_redirects=True)
 
 
-class TestRegistration:
+class TestAuthentication:
     def test_registration_successful(self, client, user):
         user_count = len(User.objects())
         response = client.post('/register', data=dict(

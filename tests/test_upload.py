@@ -58,6 +58,15 @@ class TestUpload:
         delete_document(response.text)
         assert b"Microwaves_explained_in_ten_seconds.mp4" in response.data
 
+    def test_watson_query(self, client):
+        document_id = "253ab659-de8c-4f9b-a4e6-572ecb73a121"  # id for microwaves transcript in watson discovery
+        response = client.post('/watson_response', json=dict(
+            message='When are microwaves discussed?',
+            document_id=document_id,
+            # microwaves discussed at 5 seconds
+        ), follow_redirects=True)
+        assert b"5" in response.data
+
 
 def delete_document(response_string):
     discovery = setup_discovery()

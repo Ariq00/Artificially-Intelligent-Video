@@ -109,3 +109,4 @@ def delete_all_jobs():
     response = stt.check_jobs().get_result()
     for job in response["recognitions"]:
         stt.delete_job(job["id"])
+        print("Job deleted")

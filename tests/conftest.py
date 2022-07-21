@@ -74,5 +74,6 @@ def run_app(app):
     process = multiprocessing.get_context('fork').Process(target=app.run,
                                                           args=())
     process.start()
+
     yield process
     process.terminate()
