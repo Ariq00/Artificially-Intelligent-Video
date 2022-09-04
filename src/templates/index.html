@@ -7,7 +7,7 @@
             type="text/javascript"></script>
     <script>
         $(document).ready(function () {
-            $("#youtubeButton, #uploadButton").click(function () {
+            $("#youtubeForm, #fileForm").submit(function () {
                 $.LoadingOverlay("show");
             });
         });
@@ -58,7 +58,8 @@
     <!--Upload form-->
     <section class="pt-3">
         <div class="container">
-            <form method="POST" action="" enctype="multipart/form-data">
+            <form method="POST" action="" enctype="multipart/form-data"
+                  id="fileForm">
                 <input type="hidden" name="video" value="file">
                 <input type="hidden" name="languageSubmit" value="us">
                 <div class="row">
