@@ -61,6 +61,9 @@ def user(db):
 @pytest.fixture(scope='class')
 def driver(request):
     options = EdgeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Edge(EdgeChromiumDriverManager().install(),
                             options=options)
     request.cls.driver = driver
