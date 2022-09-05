@@ -138,7 +138,7 @@ function generateUUID() {
 
 
 function make_timestamps_clickable(id, timestamp) {
-    const video = document.getElementById("videoDemo_html5_api"); // have to use this ID for some reason
+    const video = document.getElementById("videoDemo_html5_api");
     document.getElementById(id).addEventListener("click", function (event) {
         video.currentTime = timestamp;
         video.play();
