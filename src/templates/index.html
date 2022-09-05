@@ -338,8 +338,7 @@
                 var multiple_youtube_form = $("#multipleYouTubeForm")
                 var data = multiple_youtube_form.serializeArray()
 
-                {#alert("Job successfully added! You will get an email notification when processing is complete.");#}
-                job_added_message()
+                job_added_message() // flash message
                 multiple_youtube_form[0].reset(); // reset the form
 
                 $.ajax({
@@ -366,7 +365,6 @@
                 data.append('video', 'file')
                 data.append('languageSubmit', 'us')
 
-                {#alert("Job successfully added! You will get an email notification when processing is complete.");#}
                 job_added_message()
                 $("#multipleFileForm")[0].reset(); // reset the form
 
