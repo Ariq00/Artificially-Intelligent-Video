@@ -1,7 +1,7 @@
 from tests.test_auth import login
 
 
-class TestAuthentication:
+class TestUser:
     def test_no_results_saved_videos(self, client, user):
         login(client, user)
         response = client.get("/search_saved_videos?searchQuery=Test?query")
