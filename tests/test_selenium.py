@@ -20,7 +20,7 @@ class TestSmartVideoBrowser:
             "When does the video talk about microwaves?")
         self.driver.find_element(By.XPATH,
                                  "/html/body/main/div/section[1]/div/div[2]/div[2]/div/div[3]/button").click()
-        time.sleep(3)
+        time.sleep(5)
         # check timestamp is correct
         response = self.driver.page_source
         delete_document(response)
