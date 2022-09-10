@@ -340,6 +340,7 @@
 
                 job_added_message() // flash message
                 multiple_youtube_form[0].reset(); // reset the form
+                window.scrollTo(0, 0)
 
                 $.ajax({
                     url: {{ request.script_root|tojson }} +'/upload_multiple_videos',
@@ -367,6 +368,7 @@
 
                 job_added_message()
                 $("#multipleFileForm")[0].reset(); // reset the form
+                window.scrollTo(0, 0)
 
                 $.ajax({
                     url: {{ request.script_root|tojson }} +'/upload_multiple_videos',
