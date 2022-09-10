@@ -8,6 +8,7 @@ from main.utilities import process_upload, \
     summarise_and_analyse
 from ibm_cloud_sdk_core.api_exception import ApiException
 from pydub.exceptions import CouldntDecodeError
+import os
 
 main_bp = Blueprint('main', __name__)
 
@@ -42,31 +43,36 @@ def home():
             flash("Couldn't decode file!", "danger")
             return redirect(url_for("main.home"))
 
-        # upload to discovery
-        discovery = watson_discovery.setup_discovery()
         transcript_filename = f"{user_id}.json"
-        document_id = watson_discovery.upload_transcript(discovery,
-                                                         transcript_filename)
 
         try:
             summary, score, sentiment, concepts = summarise_and_analyse(
                 transcript_filename)
 
-            return render_template("video.html",
-                                   filepath=static_media_filepath.replace(
-                                       "./static", ""),
-                                   document_id=document_id,
-                                   title=media_title,
-                                   summary=summary,
-                                   sentiment=sentiment,
-                                   score=score,
-                                   concepts=concepts,
-                                   video_is_saved=False)
-
         except ApiException:
             flash("Could not analyse video. Video has no audio content!",
                   "danger")
+            os.remove(f"./transcripts/{transcript_filename}")
             return redirect(url_for("main.home"))
+
+        # upload to discovery
+        discovery = watson_discovery.setup_discovery()
+        document_id = watson_discovery.upload_transcript(discovery,
+                                                         transcript_filename)
+
+        # delete transcript
+        os.remove(f"./transcripts/{transcript_filename}")
+
+        return render_template("video.html",
+                               filepath=static_media_filepath.replace(
+                                   "./static", ""),
+                               document_id=document_id,
+                               title=media_title,
+                               summary=summary,
+                               sentiment=sentiment,
+                               score=score,
+                               concepts=concepts,
+                               video_is_saved=False)
 
     return render_template("index.html")
 

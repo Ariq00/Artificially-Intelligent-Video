@@ -1,11 +1,9 @@
-from flask_login import current_user
 from pytube.exceptions import PytubeError
 from werkzeug.utils import secure_filename
 from summarize_text import summarize_text
 from transcribe import download_video
 from datetime import datetime
 from watson_nlu import analyse_text
-import os
 from flask_mail import Message
 from setup_app import mail
 from werkzeug.exceptions import RequestEntityTooLarge
@@ -67,8 +65,6 @@ def summarise_and_analyse(transcript_filename):
 
     # key concepts
     concepts = analysis_results["concepts"]
-    # delete transcript
-    os.remove(f"./transcripts/{transcript_filename}")
 
     return summary, score, sentiment, concepts
 

@@ -28,9 +28,7 @@ def check_if_transcript_exists(discovery, filename):
 
 def upload_transcript(discovery, transcript_filename):
     transcript_path = "./transcripts/" + transcript_filename
-    if check_if_transcript_exists(discovery, transcript_filename):
-        delete_transcript(discovery, check_if_transcript_exists(discovery,
-                                                                transcript_filename))
+
     with open(transcript_path) as fileinfo:
         add_doc = discovery.add_document(
             environment_id=discovery_environment_id,
@@ -38,6 +36,7 @@ def upload_transcript(discovery, transcript_filename):
             file=fileinfo,
             file_content_type="application/json"
         ).get_result()
+        print("added to discovery: ", add_doc["document_id"])
         return add_doc["document_id"]
 
 
@@ -66,3 +65,16 @@ def delete_transcript(discovery, document_id):
         collection_id=discovery_collection_id,
         document_id=document_id
     )
+    print("Deleted document: ", document_id)
+
+
+def delete_all_documents():
+    results = setup_discovery().query(
+        environment_id=discovery_environment_id,
+        collection_id=discovery_collection_id,
+        # only returns results for specific document
+        count=50
+    ).get_result()["results"]  # number of passages to return
+
+    for result in results:
+        delete_transcript(setup_discovery(), result["id"])

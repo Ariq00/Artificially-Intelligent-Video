@@ -99,6 +99,9 @@ def upload_multiple_videos():
         if upload_result["status"] == "failed":
             if upload_result.get("media_title"):
                 title = upload_result["media_title"]
+
+                if title == "Video Not Available":
+                    title = f"Video {index}"
             else:
                 title = f"Video {index}"
             video_status_dict[title] = upload_result["message"]
@@ -117,34 +120,37 @@ def upload_multiple_videos():
             video_status_dict[media_title] = "Couldn't decode file"
             continue
 
-        # upload to discovery
-        discovery = watson_discovery.setup_discovery()
         transcript_filename = f"{user_id}.json"
-        document_id = watson_discovery.upload_transcript(discovery,
-                                                         transcript_filename)
 
         try:
             summary, score, sentiment, concepts = summarise_and_analyse(
                 transcript_filename)
 
-            Video(
-                filepath=static_media_filepath.replace(
-                    "./static", ""),
-                document_id=document_id,
-                title=media_title,
-                summary=summary,
-                sentiment=sentiment,
-                score=score,
-                concepts=concepts,
-                user=current_user
-            ).save()
-
-            video_status_dict[media_title] = "Success"
-
         except ApiException:
             video_status_dict[
                 media_title] = "Could not analyse video. Video has no audio content!"
             continue
+
+        # upload to discovery
+        discovery = watson_discovery.setup_discovery()
+        document_id = watson_discovery.upload_transcript(discovery,
+                                                         transcript_filename)
+        # delete transcript
+        os.remove(f"./transcripts/{transcript_filename}")
+
+        Video(
+            filepath=static_media_filepath.replace(
+                "./static", ""),
+            document_id=document_id,
+            title=media_title,
+            summary=summary,
+            sentiment=sentiment,
+            score=score,
+            concepts=concepts,
+            user=current_user
+        ).save()
+
+        video_status_dict[media_title] = "Success"
 
     # send email
     msg_body = f"Hi {current_user.first_name},\n\nThe status of your submitted videos is shown below:\n\n"
