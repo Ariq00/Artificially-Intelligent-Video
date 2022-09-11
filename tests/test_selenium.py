@@ -14,7 +14,7 @@ class TestSmartVideoBrowser:
         self.driver.find_element(By.ID, "youtubeButton").click()
 
         # search for concept
-        time.sleep(3)
+        time.sleep(10)
         self.driver.find_element(By.XPATH,
                                  "/html/body/main/div/section[1]/div/div[2]/div[2]/div/div[3]/input").send_keys(
             "When does the video talk about microwaves?")
