@@ -6,7 +6,8 @@ from pydub import AudioSegment
 from pydub.utils import make_chunks
 import os
 import json
-from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.exceptions import RequestEntityTooLarge, \
+    UnavailableForLegalReasons
 
 chunk_duration = 5
 overlap = 0.5  # 0.5 second overlap between each chunk
@@ -14,8 +15,19 @@ overlap = 0.5  # 0.5 second overlap between each chunk
 
 def download_video(video_url, filename):
     save_path = './static/video'
-    yt_video = YouTube(video_url).streams.filter(file_extension='mp4',
-                                                 progressive=True).first()
+
+    # PyTube bug - need to keep looping as video is sometimes not available
+    title = "Video Not Available"
+    num_tries = 0
+    while title == "Video Not Available" and num_tries < 5:
+        yt_video = YouTube(video_url).streams.filter(file_extension='mp4',
+                                                     progressive=True).first()
+        title = yt_video.title
+        num_tries += 1
+
+    if title == "Video Not Available":
+        raise UnavailableForLegalReasons
+
     filesize = yt_video.filesize / 1024 / 1024
     if filesize > 500:
         raise RequestEntityTooLarge

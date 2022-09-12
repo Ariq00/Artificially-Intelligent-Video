@@ -6,7 +6,8 @@ from datetime import datetime
 from watson_nlu import analyse_text
 from flask_mail import Message
 from setup_app import mail
-from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.exceptions import RequestEntityTooLarge, \
+    UnavailableForLegalReasons
 
 
 def process_upload(request_array, user_id):
@@ -52,6 +53,9 @@ def process_upload(request_array, user_id):
         except RequestEntityTooLarge:
             return {"status": "failed",
                     "message": "Video file is greater than 500MB!"}
+        except UnavailableForLegalReasons:
+            return {"status": "failed",
+                    "message": "Could not download YouTube video!"}
 
     return {"status": "success", "media_title": media_title,
             "static_media_filepath": static_media_filepath}
